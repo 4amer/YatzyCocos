@@ -11,10 +11,13 @@ export default class GameModel{
     
     private static GameModel: GameModel = null;
 
+    private _throwDowncount: number = 3;
+
     private constructor(){
         this._gameView = GodSinglton.gameView;
         this._gameView.node.on("Throw", this.WhenThrowButtonClicked, this);
         this._gameView.node.on("Move", this.WhenMoveButtonClicked, this);
+        this._gameView.node.on("ToggleSelected", this.WhenToggleSelected, this);
     }
 
     public static get Instance(): GameModel{
@@ -23,8 +26,19 @@ export default class GameModel{
         }
         return this.GameModel;
     }
+    
+    private WhenToggleSelected(): void{
+        this._gameView.ActivateMoveButton();
+    }
+
+    private WhenMoveButtonClicked(): void{
+        
+    }
 
     private WhenThrowButtonClicked(): void{
+        if(this._throwDowncount <= 0) return;
+        this._throwDowncount -= 1;
+        this._gameView.ThrowDowncounter = this._throwDowncount;
         for(let i = 0; i < this._gameView.Dices.length; i++){
             let dice: Dice = this._gameView.Dices[i].getComponent(Dice);
             if(dice.Condition == DiceConditions.lock) continue;
@@ -37,10 +51,6 @@ export default class GameModel{
             let randomNum = randomRangeInt(1, 7);
             dice.RequestingNumber = randomNum;
         }, rollTimeMs);
-    }
-
-    private WhenMoveButtonClicked(): void{
-        
     }
 }
 
