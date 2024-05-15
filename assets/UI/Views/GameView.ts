@@ -11,6 +11,7 @@ export class GameView extends Component {
     @property({visible: true, type: Button}) private _moveButton: Button = null; 
     @property({visible: true, type: Button}) private _throwButton: Button = null; 
     @property({visible: true, type: RichText}) private _throwDowncounter: RichText = null; 
+    @property({visible: true, type: RichText}) private _scoreText: RichText = null; 
     @property({visible: true, type: ToggleContainer}) private _toggleContainer: ToggleContainer = null; 
     @property({visible: true, type: [Toggle]}) private _toggles: ToggleWithSectionName[] = []; 
     @property({visible: true, type: [RichText]}) private _dices: RichText[] = []; 
@@ -51,6 +52,10 @@ export class GameView extends Component {
         toggle.getComponent(Sprite).color = toggle.disabledColor;
         toggle.interactable = false;
         toggle.isChecked = false;
+    }
+
+    public set Score(number: number){
+        this._scoreText.string = `${number}`;
     }
 
     public set ToggleContainerAllowSwitchOff(bool : boolean){

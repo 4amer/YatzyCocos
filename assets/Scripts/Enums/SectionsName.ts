@@ -8,7 +8,7 @@ export enum SectionsName{
     Six = 6,
     ThreeIdentical = 7,
     FourIdentical = 8,
-    ThreePlusTwoIdentical = 9,
+    FullHouse = 9,
     FourInOrder = 10,
     AllInOrder = 11,
     FiveIdentical = 12,
