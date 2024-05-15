@@ -35,6 +35,14 @@ export class Dice extends Component {
         text.string = `${this._requestingNumber}`;
     }
 
+    public SetToDeactive(){
+        this._isActive = false;
+    }
+
+    public SetToActive(){
+        this._isActive = true;
+    }
+
     public set Condition(condition: DiceConditions){
         this._condition = condition;
     }

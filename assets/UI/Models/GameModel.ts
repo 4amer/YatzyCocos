@@ -1,8 +1,9 @@
-import { _decorator, Component, Node, randomRangeInt } from 'cc';
+import { _decorator, Component, Node, randomRangeInt, Sprite, Toggle } from 'cc';
 import { GodSinglton } from '../../Scripts/GodSinglton';
 import { GameView } from '../Views/GameView';
 import { Dice } from '../../Scripts/Dice';
 import { DiceConditions } from '../../Scripts/Enums/DiceConditions';
+import { ToggleWithSectionName } from '../../Scripts/ToggleWithSectionName';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameModel')
@@ -11,7 +12,10 @@ export default class GameModel{
     
     private static GameModel: GameModel = null;
 
+    private MaxThrowCount: number = 3;
     private _throwDowncount: number = 3;
+
+    private _currentSelectedToggle: ToggleWithSectionName = null;
 
     private constructor(){
         this._gameView = GodSinglton.gameView;
@@ -27,12 +31,17 @@ export default class GameModel{
         return this.GameModel;
     }
     
-    private WhenToggleSelected(): void{
+    private WhenToggleSelected(toggle: ToggleWithSectionName): void{
+        this._gameView.ToggleContainerAllowSwitchOff = false;
         this._gameView.ActivateMoveButton();
+        this._currentSelectedToggle = toggle;
     }
 
     private WhenMoveButtonClicked(): void{
-        
+        this._throwDowncount = this.MaxThrowCount;
+        this._gameView.ToggleContainerAllowSwitchOff = true;
+        this._gameView.DeactivateMoveButton();
+        this._gameView.SetToggleToDisable(this._currentSelectedToggle);
     }
 
     private WhenThrowButtonClicked(): void{
@@ -47,9 +56,11 @@ export default class GameModel{
     }
 
     private async RollDice(dice: Dice, rollTimeMs: number): Promise<void> {
+        dice.SetToDeactive();
         setTimeout(() => {
             let randomNum = randomRangeInt(1, 7);
             dice.RequestingNumber = randomNum;
+            dice.SetToActive();
         }, rollTimeMs);
     }
 }
