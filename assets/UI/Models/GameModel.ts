@@ -21,6 +21,7 @@ export default class GameModel{
     private _UpperSectionBonus: number = 35;
     private _ScoreToGetUpperSectionBonus: number = 63;
     private _upperSectionScoreCounter: number = 0;
+    private _lowerSectionScoreCounter: number = 0;
     private _hasUpperSectionBonus: boolean = true;
 
     private _hasFiveIdentical: boolean = false;
@@ -29,7 +30,9 @@ export default class GameModel{
     private _currentSelectedToggle: ExtendedToggle = null;
     private _currentScore: number = 0;
 
-    private _diceValues: number[] = []; 
+    private _diceValues: number[] = [0,0,0,0,0]; 
+
+    private _stopDicesCounter: number = 0;
 
     private constructor(){
         this._gameView = GodSinglton.gameView;
@@ -47,78 +50,100 @@ export default class GameModel{
 
     private WhenToggleSelected(toggle: ExtendedToggle): void{
         this._gameView.ToggleContainerAllowSwitchOff = false;
-        this._gameView.ActivateMoveButton();
+        this._gameView.EnableMoveButton();
         this._currentSelectedToggle = toggle;
     }
 
     private WhenMoveButtonClicked(): void{
         this.ThrowCoutnerByDefault();
         this._gameView.ToggleContainerAllowSwitchOff = true;
-        this._gameView.DeactivateMoveButton();
-        this._gameView.SetToggleToDisable(this._currentSelectedToggle);
+        this._gameView.DisableMoveButton();
+        this._gameView.DisableToggle(this._currentSelectedToggle);
 
-        var sum: number = 0;
+
+
+        var scoreSum: number = 0;
         if(this._hasFiveIdentical == true && this.CheckIdenticalNumbers(5)){
-            this.AddScore(this._YatzyScore);
+            scoreSum += this._YatzyScore;
         }
         switch(this._currentSelectedToggle.SectionName){
             case SectionsName.One:
-                sum = this.SumFromCertainNumbers(1)
-                this.AddScore(sum);
-                this._upperSectionScoreCounter += sum;
+                scoreSum = this.SumFromCertainNumbers(1)
+                this.AddScore(scoreSum);
+                this._upperSectionScoreCounter += scoreSum;
                 break;
             case SectionsName.Two:
-                sum = this.SumFromCertainNumbers(2)
-                this.AddScore(sum);
-                this._upperSectionScoreCounter += sum;
+                scoreSum = this.SumFromCertainNumbers(2)
+                this.AddScore(scoreSum);
+                this._upperSectionScoreCounter += scoreSum;
                 break;
             case SectionsName.Three:
-                sum = this.SumFromCertainNumbers(3)
-                this.AddScore(sum);
-                this._upperSectionScoreCounter += sum;
+                scoreSum = this.SumFromCertainNumbers(3)
+                this.AddScore(scoreSum);
+                this._upperSectionScoreCounter += scoreSum;
                 break;
             case SectionsName.Four:
-                sum = this.SumFromCertainNumbers(4)
-                this.AddScore(sum);
-                this._upperSectionScoreCounter += sum;
+                scoreSum = this.SumFromCertainNumbers(4)
+                this.AddScore(scoreSum);
+                this._upperSectionScoreCounter += scoreSum;
                 break;
             case SectionsName.Five:
-                sum = this.SumFromCertainNumbers(5)
-                this.AddScore(sum);
-                this._upperSectionScoreCounter += sum;
+                scoreSum = this.SumFromCertainNumbers(5)
+                this.AddScore(scoreSum);
+                this._upperSectionScoreCounter += scoreSum;
                 break;
             case SectionsName.Six:
-                sum = this.SumFromCertainNumbers(6)
-                this.AddScore(sum);
-                this._upperSectionScoreCounter += sum;
+                scoreSum = this.SumFromCertainNumbers(6)
+                this.AddScore(scoreSum);
+                this._upperSectionScoreCounter += scoreSum;
                 break;
             case SectionsName.ThreeIdentical:
-                if(this.CheckIdenticalNumbers(3))
-                    this.AddScore(this.SumFromDiceValues());
+                if(this.CheckIdenticalNumbers(3) == true){
+                    scoreSum = this.SumFromDiceValues()
+                    this.AddScore(scoreSum);
+                    this._lowerSectionScoreCounter += scoreSum;
+                    }
                 break;
             case SectionsName.FourIdentical:
-                if(this.CheckIdenticalNumbers(4))
-                    this.AddScore(this.SumFromDiceValues());
+                if(this.CheckIdenticalNumbers(4) == true){
+                    scoreSum = this.SumFromDiceValues()
+                    this.AddScore(scoreSum);
+                    this._lowerSectionScoreCounter += scoreSum;
+                }
                 break;
             case SectionsName.FiveIdentical:
-                if(this.CheckIdenticalNumbers(5))
+                if(this.CheckIdenticalNumbers(5) == true){
                     this._hasFiveIdentical = true;
+                    scoreSum += this._YatzyScore;
                     this.AddScore(this._YatzyScore);
+                    this._lowerSectionScoreCounter += this._YatzyScore;
+                }
                 break;
             case SectionsName.FullHouse:
-                if(this.CheckFullHouse())
+                if(this.CheckFullHouse() == true){
+                    scoreSum += this._FullHouseScore;
                     this.AddScore(this._FullHouseScore);
+                    this._lowerSectionScoreCounter += this._FullHouseScore;
+                }
                 break;
             case SectionsName.FourInOrder:
-                if(this.CheckStraight(4))
+                if(this.CheckStraight(4) == true){
+                    scoreSum += this._SmallStraightScore;
                     this.AddScore(this._SmallStraightScore);
+                    this._lowerSectionScoreCounter += this._SmallStraightScore;
+                }
                 break;
             case SectionsName.AllInOrder:
-                if(this.CheckStraight(5))
+                if(this.CheckStraight(5) == true){
+                    scoreSum += this._BigStraightScore;
                     this.AddScore(this._BigStraightScore);
+                    this._lowerSectionScoreCounter += this._BigStraightScore;
+                }
                 break;
             case SectionsName.Other:
-                this.AddScore(this.SumFromDiceValues());
+                scoreSum = this.SumFromDiceValues();
+                this.AddScore(scoreSum);
+                this._lowerSectionScoreCounter += scoreSum;
                 break;
             case SectionsName.None:
                 console.warn("Section name is 'None'!");
@@ -126,39 +151,55 @@ export default class GameModel{
         }
         if(this._upperSectionScoreCounter >= this._ScoreToGetUpperSectionBonus && this._hasUpperSectionBonus == true){
             this._hasUpperSectionBonus = false;
+            this._gameView.ChangeUpperSectionBonusScoresValue(this._UpperSectionBonus);
             this.AddScore(this._UpperSectionBonus);
         }
+        console.log(scoreSum);
+        this._currentSelectedToggle.ScoreText = `${scoreSum}`;
         this.ChangeScoreTextOnView();
-        this._gameView.TurnOffDiceLayout();
-        this._gameView.TurnOnThrowDiceText();
+        this._gameView.DisableDiceLayout();
+        this._gameView.EnableThrowDiceText();
         this.ToggleContainerActive(false);
         this.UnlockAllDice();
     }
 
     private WhenThrowButtonClicked(): void{
         if(this._throwCount <= 0) return;
+        this._stopDicesCounter = 0;
         this._throwCount -= 1;
         this.ToggleContainerActive(true);
-        this._gameView.TurnOnDiceLayout();
-        this._gameView.TurnOffThrowDiceText();
+        this._gameView.EnableDiceLayout();
+        this._gameView.DisableThrowDiceText();
+        this._gameView.DisableThrowButton();
         this._gameView.ThrowCounter = this._throwCount;
         for(let i = 0; i < this._gameView.Dices.length; i++){
             let dice: Dice = this._gameView.Dices[i].getComponent(Dice);
-            if(dice.Condition == DiceConditions.lock) continue;
-            this.RollDice(dice, i * 100 + 500, i);
+            if(dice.Condition == DiceConditions.lock) {
+                this._stopDicesCounter += 1;
+                continue;
+            }
+            this.RollDice(dice, i * 100, i).then(() => {
+                if(this._stopDicesCounter == this._diceValues.length){
+                    this._gameView.EnableThrowButton();
+                }
+            });
         }
     }
 
     private async RollDice(dice: Dice, rollTimeMs: number, diceNumber: number): Promise<void> {
-        dice.SetToDeactive();
+        return new Promise((resolve, reject) => {
+            dice.SetToDeactive();
         
-        setTimeout(() => {
-            let randomNum = randomRangeInt(1, 7);
-            dice.RequestingValue = randomNum;
-            dice.ChangeTextColorToWhite();
-            this._diceValues[diceNumber] = randomNum;
-            dice.SetToActive();
-        }, rollTimeMs);
+            setTimeout(() => {
+                let randomNum = randomRangeInt(1, 7);
+                dice.RequestingValue = randomNum;
+                dice.ChangeTextColorToWhite();
+                this._diceValues[diceNumber] = randomNum;
+                dice.SetToActive();
+                this._stopDicesCounter += 1;
+                resolve();
+            }, rollTimeMs);
+        })
     }
 
     private ToggleContainerActive(bool: boolean){
@@ -179,8 +220,14 @@ export default class GameModel{
         });
     }
 
+    private ChangeViewSumValues(): void{
+        this._gameView.ChangeSumForLowerSectionValue(this._lowerSectionScoreCounter);
+        this._gameView.ChangeSumForUpperSectionValue(this._upperSectionScoreCounter);
+    }
+
     private ChangeScoreTextOnView(){
         this._gameView.Score = this._currentScore;
+        this.ChangeViewSumValues();
     }
 
     private AddScore(number: number){
@@ -258,14 +305,18 @@ export default class GameModel{
     private CheckStraight(straightNumber: number): boolean{
         let straight:number = 0;
         let isStraight: boolean = false;
-        let minNum: number = Math.min.apply(this._diceValues);
+        let minNum: number = Math.min(...this._diceValues);
         for(let i = 0; i < this._diceValues.length; i++){
             let nextNum: number = 0;
-            nextNum = this._diceValues.find((element) => element == (minNum + i));
-            if(nextNum != 0){
+            let nextNumIndex: number = this._diceValues.indexOf((minNum + i));
+            nextNum = this._diceValues[nextNumIndex];
+            if(nextNum == undefined){
+                return false;
+            }
+            if(nextNum > 0){
                 straight += 1;
             }
-            if(straight == straightNumber){
+            if(straight >= straightNumber){
                 isStraight = true;
                 break;
             }

@@ -13,6 +13,9 @@ export class GameView extends Component {
     @property({visible: true, type: RichText}) private _throwCounter: RichText = null; 
     @property({visible: true, type: RichText}) private _scoreText: RichText = null; 
     @property({visible: true, type: RichText}) private _throwDiceText: RichText = null; 
+    @property({visible: true, type: RichText}) private _sumForUpperSection: RichText = null; 
+    @property({visible: true, type: RichText}) private _sumForLowerSection: RichText = null; 
+    @property({visible: true, type: RichText}) private _upperSectionBonusScores: RichText = null; 
     @property({visible: true, type: ToggleContainer}) private _toggleContainer: ToggleContainer = null; 
     @property({visible: true, type: [Toggle]}) private _toggles: ExtendedToggle[] = []; 
     @property({visible: true, type: [RichText]}) private _dices: RichText[] = []; 
@@ -21,9 +24,9 @@ export class GameView extends Component {
     private _gameModel: GameModel = null;
 
     protected start(): void {
-        this.DeactivateMoveButton();
-        this.TurnOffDiceLayout();
-        this.TurnOnThrowDiceText();
+        this.DisableMoveButton();
+        this.DisableDiceLayout();
+        this.EnableThrowDiceText();
         this.DoAllEnabledToggleInteractable(false);
         this.ToggleContainerActive(false);
     }
@@ -46,35 +49,55 @@ export class GameView extends Component {
         this.node.emit("ToggleSelected", toggle);
     }    
 
-    public ActivateMoveButton(): void{
+    public EnableThrowButton(): void{
+        this._throwButton.interactable = true;
+    }
+    
+    public DisableThrowButton(): void{
+        this._throwButton.interactable = false;
+    }
+
+    public EnableMoveButton(): void{
         this._moveButton.interactable = true;
     }
     
-    public DeactivateMoveButton(): void{
+    public DisableMoveButton(): void{
         this._moveButton.interactable = false;
     }
     
-    public SetToggleToDisable(toggle: ExtendedToggle){
+    public DisableToggle(toggle: ExtendedToggle){
         toggle.getComponent(Sprite).color = toggle.disabledColor;
         toggle.interactable = false;
         toggle.isChecked = false;
         toggle.IsDisable = true;
     }
 
-    public TurnOffDiceLayout(){
+    public DisableDiceLayout(){
         this._diceLayout.active = false;
     }
 
-    public TurnOnDiceLayout(){
+    public EnableDiceLayout(){
         this._diceLayout.active = true;
     }
 
-    public TurnOffThrowDiceText(){
+    public DisableThrowDiceText(){
         this._throwDiceText.node.active = false;
     }
 
-    public TurnOnThrowDiceText(){
+    public EnableThrowDiceText(){
         this._throwDiceText.node.active = true;
+    }
+
+    public ChangeUpperSectionBonusScoresValue(number: number){
+        this._upperSectionBonusScores.string = `${number}`;
+    }
+
+    public ChangeSumForUpperSectionValue(number: number){
+        this._sumForUpperSection.string = `${number}`;
+    }
+
+    public ChangeSumForLowerSectionValue(number: number){
+        this._sumForLowerSection.string = `${number}`;
     }
 
     public DoAllEnabledToggleInteractable(bool: boolean){

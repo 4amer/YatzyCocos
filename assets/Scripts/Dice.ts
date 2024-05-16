@@ -14,7 +14,7 @@ export class Dice extends Component {
 
     private _isActive = true;
 
-    protected start(): void {
+    protected onLoad(): void {
         this.node.on(Input.EventType.TOUCH_END, this.TouchEnd, this);
         this._richText = this.node.getComponent(RichText);
     }
