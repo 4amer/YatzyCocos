@@ -104,6 +104,7 @@ export default class GameModel{
         this._gameView.TurnOffDiceLayout();
         this._gameView.TurnOnThrowDiceText();
         this.ToggleContainerActive(false);
+        this.UnlockAllDice();
     }
 
     private WhenThrowButtonClicked(): void{
@@ -126,6 +127,7 @@ export default class GameModel{
         setTimeout(() => {
             let randomNum = randomRangeInt(1, 7);
             dice.RequestingValue = randomNum;
+            dice.ChangeTextColorToWhite();
             this._diceValues[diceNumber] = randomNum;
             dice.SetToActive();
         }, rollTimeMs);
@@ -139,6 +141,14 @@ export default class GameModel{
     private ThrowCoutnerByDefault(){
         this._throwCount = this._MaxThrowCount;
         this._gameView.ThrowCounter = this._MaxThrowCount;
+    }
+
+    private UnlockAllDice(){
+        this._gameView.Dices.forEach((element) => {
+            let dice: Dice = element.getComponent(Dice);
+            dice.Condition = DiceConditions.unlock;
+            dice.ClearTextField();
+        });
     }
 
     private ChangeScoreTextOnView(){

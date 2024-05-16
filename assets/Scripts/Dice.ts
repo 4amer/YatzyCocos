@@ -7,37 +7,50 @@ export class Dice extends Component {
     @property({visible: true, type: Enum(DiceConditions)}) private _condition: DiceConditions = DiceConditions.lock;
     @property({visible: true, type: CCInteger}) private _requestingValue: number = 1;
 
-    private _text: RichText = this.node.getComponent(RichText);
-
     private WhiteColor: string = "WHITE";
     private RedColor: string = "RED";
+
+    private _richText: RichText = null;
 
     private _isActive = true;
 
     protected start(): void {
         this.node.on(Input.EventType.TOUCH_END, this.TouchEnd, this);
+        this._richText = this.node.getComponent(RichText);
     }
 
     private TouchEnd(): void{
         if(!this._isActive) return;
         if(this._condition == DiceConditions.lock){
             this._condition = DiceConditions.unlock;
-            this._text.string = `<color = ${this.WhiteColor}> ${this._requestingValue} <color/>`;
+            this.ChangeTextColorToWhite();
         } 
         else if (this._condition == DiceConditions.unlock) 
         {
             this._condition = DiceConditions.lock;
-            this._text.string = `<color = ${this.RedColor}> ${this._requestingValue} <color/>`;
+            this.ChangeTextColorToRed();
         }
     }   
 
     private Rewrite(): void{
-        this._text.string = `${this._requestingValue}`;
+        this._richText.string = `${this._requestingValue}`;
     }
 
     public Unlock(){
         this._condition = DiceConditions.unlock;
-        this._text.string = `<color = ${this.WhiteColor}> ${this._requestingValue} <color/>`;
+        this._richText.string = `<color = ${this.WhiteColor}> ${this._requestingValue} <color/>`;
+    }
+
+    public ChangeTextColorToRed(): void{
+        this._richText.string = `<color = ${this.RedColor}> ${this._requestingValue} <color/>`;
+    }
+
+    public ChangeTextColorToWhite(): void{
+        this._richText.string = `<color = ${this.WhiteColor}> ${this._requestingValue} <color/>`;
+    }
+
+    public ClearTextField(): void{
+        this._richText.string = "";
     }
 
     public SetToDeactive(){

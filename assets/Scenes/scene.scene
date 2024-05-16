@@ -6268,7 +6268,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -188.9453125,
+      "x": -100,
       "y": 0,
       "z": 0
     },
@@ -6307,7 +6307,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 44.47265625,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -6328,7 +6328,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": " 6 ",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -6361,7 +6361,7 @@
     "__prefab": null,
     "_condition": 1,
     "_requestingValue": 1,
-    "_id": "2dIWAYu81CPIfMLyXGIU+M"
+    "_id": "bfAHaNT7lMVJdujJ90mSn7"
   },
   {
     "__type__": "cc.Node",
@@ -6387,7 +6387,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -94.47265625,
+      "x": -50,
       "y": 0,
       "z": 0
     },
@@ -6426,7 +6426,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 44.47265625,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -6447,7 +6447,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": " 6 ",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -6479,8 +6479,8 @@
     "_enabled": true,
     "__prefab": null,
     "_condition": 1,
-    "_requestingValue": 2,
-    "_id": "71wvwaaWdEGIq4KxnnjHlP"
+    "_requestingValue": 1,
+    "_id": "b1EOTUNfNMMK6loZiTD2xi"
   },
   {
     "__type__": "cc.Node",
@@ -6545,7 +6545,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 44.47265625,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -6566,7 +6566,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": " 6 ",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -6598,8 +6598,8 @@
     "_enabled": true,
     "__prefab": null,
     "_condition": 1,
-    "_requestingValue": 3,
-    "_id": "71jdf74H1PMpYTk0osKFBY"
+    "_requestingValue": 1,
+    "_id": "4bPxF2D+BKrbyETNm2HYX3"
   },
   {
     "__type__": "cc.Node",
@@ -6625,7 +6625,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 94.47265625,
+      "x": 50,
       "y": 0,
       "z": 0
     },
@@ -6664,7 +6664,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 44.47265625,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -6685,7 +6685,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": " 6 ",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -6717,8 +6717,8 @@
     "_enabled": true,
     "__prefab": null,
     "_condition": 1,
-    "_requestingValue": 4,
-    "_id": "67dSJTy/FPAb5XP7mnzF17"
+    "_requestingValue": 1,
+    "_id": "45HSn8KlBPUYMhDFxCtbCP"
   },
   {
     "__type__": "cc.Node",
@@ -6744,7 +6744,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": 188.9453125,
+      "x": 100,
       "y": 0,
       "z": 0
     },
@@ -6783,7 +6783,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 44.47265625,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -6804,7 +6804,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": " 6 ",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -6837,7 +6837,7 @@
     "__prefab": null,
     "_condition": 1,
     "_requestingValue": 1,
-    "_id": "68Yl9nPOlLIr6mfVfA1EMh"
+    "_id": "35AdqCI3RKe4lmGdp+EwCq"
   },
   {
     "__type__": "cc.UITransform",
@@ -6851,7 +6851,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 422.36328125,
+      "width": 200,
       "height": 100
     },
     "_anchorPoint": {
