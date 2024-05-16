@@ -13,11 +13,18 @@ export default class GameModel{
     
     private static GameModel: GameModel = null;
     private _MaxThrowCount: number = 3;
-    private _YatzyScore = 50; 
-    private _BigStraightScore = 40; 
-    private _SmallStraightScore = 30; 
-    private _FullHouseScore = 25; 
-    
+    private _YatzyScore: number = 50; 
+    private _BigStraightScore: number = 40; 
+    private _SmallStraightScore: number = 30; 
+    private _FullHouseScore: number = 25; 
+
+    private _UpperSectionBonus: number = 35;
+    private _ScoreToGetUpperSectionBonus: number = 63;
+    private _upperSectionScoreCounter: number = 0;
+    private _hasUpperSectionBonus: boolean = true;
+
+    private _hasFiveIdentical: boolean = false;
+
     private _throwCount: number = 3;
     private _currentSelectedToggle: ExtendedToggle = null;
     private _currentScore: number = 0;
@@ -50,24 +57,40 @@ export default class GameModel{
         this._gameView.DeactivateMoveButton();
         this._gameView.SetToggleToDisable(this._currentSelectedToggle);
 
+        var sum: number = 0;
+        if(this._hasFiveIdentical == true && this.CheckIdenticalNumbers(5)){
+            this.AddScore(this._YatzyScore);
+        }
         switch(this._currentSelectedToggle.SectionName){
             case SectionsName.One:
-                this.AddScore(this.SumFromCertainNumbers(1));
+                sum = this.SumFromCertainNumbers(1)
+                this.AddScore(sum);
+                this._upperSectionScoreCounter += sum;
                 break;
             case SectionsName.Two:
-                this.AddScore(this.SumFromCertainNumbers(2));
+                sum = this.SumFromCertainNumbers(2)
+                this.AddScore(sum);
+                this._upperSectionScoreCounter += sum;
                 break;
             case SectionsName.Three:
-                this.AddScore(this.SumFromCertainNumbers(3));
+                sum = this.SumFromCertainNumbers(3)
+                this.AddScore(sum);
+                this._upperSectionScoreCounter += sum;
                 break;
             case SectionsName.Four:
-                this.AddScore(this.SumFromCertainNumbers(4));
+                sum = this.SumFromCertainNumbers(4)
+                this.AddScore(sum);
+                this._upperSectionScoreCounter += sum;
                 break;
             case SectionsName.Five:
-                this.AddScore(this.SumFromCertainNumbers(5));
+                sum = this.SumFromCertainNumbers(5)
+                this.AddScore(sum);
+                this._upperSectionScoreCounter += sum;
                 break;
             case SectionsName.Six:
-                this.AddScore(this.SumFromCertainNumbers(6));
+                sum = this.SumFromCertainNumbers(6)
+                this.AddScore(sum);
+                this._upperSectionScoreCounter += sum;
                 break;
             case SectionsName.ThreeIdentical:
                 if(this.CheckIdenticalNumbers(3))
@@ -79,6 +102,7 @@ export default class GameModel{
                 break;
             case SectionsName.FiveIdentical:
                 if(this.CheckIdenticalNumbers(5))
+                    this._hasFiveIdentical = true;
                     this.AddScore(this._YatzyScore);
                 break;
             case SectionsName.FullHouse:
@@ -99,6 +123,10 @@ export default class GameModel{
             case SectionsName.None:
                 console.warn("Section name is 'None'!");
                 break;
+        }
+        if(this._upperSectionScoreCounter >= this._ScoreToGetUpperSectionBonus && this._hasUpperSectionBonus == true){
+            this._hasUpperSectionBonus = false;
+            this.AddScore(this._UpperSectionBonus);
         }
         this.ChangeScoreTextOnView();
         this._gameView.TurnOffDiceLayout();
