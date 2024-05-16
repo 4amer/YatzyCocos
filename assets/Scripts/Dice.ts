@@ -7,6 +7,8 @@ export class Dice extends Component {
     @property({visible: true, type: Enum(DiceConditions)}) private _condition: DiceConditions = DiceConditions.lock;
     @property({visible: true, type: CCInteger}) private _requestingValue: number = 1;
 
+    private _text: RichText = this.node.getComponent(RichText);
+
     private WhiteColor: string = "WHITE";
     private RedColor: string = "RED";
 
@@ -18,21 +20,24 @@ export class Dice extends Component {
 
     private TouchEnd(): void{
         if(!this._isActive) return;
-        let text: RichText = this.node.getComponent(RichText);
         if(this._condition == DiceConditions.lock){
             this._condition = DiceConditions.unlock;
-            text.string = `<color = ${this.WhiteColor}> ${this._requestingValue} <color/>`;
+            this._text.string = `<color = ${this.WhiteColor}> ${this._requestingValue} <color/>`;
         } 
         else if (this._condition == DiceConditions.unlock) 
         {
             this._condition = DiceConditions.lock;
-            text.string = `<color = ${this.RedColor}> ${this._requestingValue} <color/>`;
+            this._text.string = `<color = ${this.RedColor}> ${this._requestingValue} <color/>`;
         }
     }   
 
     private Rewrite(): void{
-        let text: RichText = this.node.getComponent(RichText);
-        text.string = `${this._requestingValue}`;
+        this._text.string = `${this._requestingValue}`;
+    }
+
+    public Unlock(){
+        this._condition = DiceConditions.unlock;
+        this._text.string = `<color = ${this.WhiteColor}> ${this._requestingValue} <color/>`;
     }
 
     public SetToDeactive(){

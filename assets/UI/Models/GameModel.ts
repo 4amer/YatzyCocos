@@ -3,8 +3,8 @@ import { GodSinglton } from '../../Scripts/GodSinglton';
 import { GameView } from '../Views/GameView';
 import { Dice } from '../../Scripts/Dice';
 import { DiceConditions } from '../../Scripts/Enums/DiceConditions';
-import { ToggleWithSectionName } from '../../Scripts/ToggleWithSectionName';
 import { SectionsName } from '../../Scripts/Enums/SectionsName';
+import { ExtendedToggle } from '../../Scripts/ExtendedToggle';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameModel')
@@ -12,16 +12,15 @@ export default class GameModel{
     private _gameView: GameView = null;
     
     private static GameModel: GameModel = null;
-    private MaxThrowCount: number = 1000;
-    private YatzyScore = 50; 
-    private BigStraightScore = 40; 
-    private SmallStraightScore = 30; 
-    private FullHouseScore = 25; 
+    private _MaxThrowCount: number = 3;
+    private _YatzyScore = 50; 
+    private _BigStraightScore = 40; 
+    private _SmallStraightScore = 30; 
+    private _FullHouseScore = 25; 
     
     private _throwCount: number = 3;
-    private _currentSelectedToggle: ToggleWithSectionName = null;
+    private _currentSelectedToggle: ExtendedToggle = null;
     private _currentScore: number = 0;
-
 
     private _diceValues: number[] = []; 
 
@@ -38,15 +37,15 @@ export default class GameModel{
         }
         return this.GameModel;
     }
-    
-    private WhenToggleSelected(toggle: ToggleWithSectionName): void{
+
+    private WhenToggleSelected(toggle: ExtendedToggle): void{
         this._gameView.ToggleContainerAllowSwitchOff = false;
         this._gameView.ActivateMoveButton();
         this._currentSelectedToggle = toggle;
     }
 
     private WhenMoveButtonClicked(): void{
-        this._throwCount = this.MaxThrowCount;
+        this.ThrowCoutnerByDefault();
         this._gameView.ToggleContainerAllowSwitchOff = true;
         this._gameView.DeactivateMoveButton();
         this._gameView.SetToggleToDisable(this._currentSelectedToggle);
@@ -80,19 +79,19 @@ export default class GameModel{
                 break;
             case SectionsName.FiveIdentical:
                 if(this.CheckIdenticalNumbers(5))
-                    this.AddScore(this.YatzyScore);
+                    this.AddScore(this._YatzyScore);
                 break;
             case SectionsName.FullHouse:
                 if(this.CheckFullHouse())
-                    this.AddScore(this.FullHouseScore);
+                    this.AddScore(this._FullHouseScore);
                 break;
             case SectionsName.FourInOrder:
                 if(this.CheckStraight(4))
-                    this.AddScore(this.SmallStraightScore);
+                    this.AddScore(this._SmallStraightScore);
                 break;
             case SectionsName.AllInOrder:
                 if(this.CheckStraight(5))
-                    this.AddScore(this.BigStraightScore);
+                    this.AddScore(this._BigStraightScore);
                 break;
             case SectionsName.Other:
                 this.AddScore(this.SumFromDiceValues());
@@ -101,13 +100,19 @@ export default class GameModel{
                 console.warn("Section name is 'None'!");
                 break;
         }
-        this.ChangeScoreTextOnView();   
+        this.ChangeScoreTextOnView();
+        this._gameView.TurnOffDiceLayout();
+        this._gameView.TurnOnThrowDiceText();
+        this.ToggleContainerActive(false);
     }
 
     private WhenThrowButtonClicked(): void{
         if(this._throwCount <= 0) return;
         this._throwCount -= 1;
-        this._gameView.ThrowDowncounter = this._throwCount;
+        this.ToggleContainerActive(true);
+        this._gameView.TurnOnDiceLayout();
+        this._gameView.TurnOffThrowDiceText();
+        this._gameView.ThrowCounter = this._throwCount;
         for(let i = 0; i < this._gameView.Dices.length; i++){
             let dice: Dice = this._gameView.Dices[i].getComponent(Dice);
             if(dice.Condition == DiceConditions.lock) continue;
@@ -124,6 +129,16 @@ export default class GameModel{
             this._diceValues[diceNumber] = randomNum;
             dice.SetToActive();
         }, rollTimeMs);
+    }
+
+    private ToggleContainerActive(bool: boolean){
+        this._gameView.DoAllEnabledToggleInteractable(bool);
+        this._gameView.ToggleContainerActive(bool);
+    }
+
+    private ThrowCoutnerByDefault(){
+        this._throwCount = this._MaxThrowCount;
+        this._gameView.ThrowCounter = this._MaxThrowCount;
     }
 
     private ChangeScoreTextOnView(){
