@@ -12,7 +12,7 @@ export default class GameModel{
     private _gameView: GameView = null;
     
     private static GameModel: GameModel = null;
-    private _MaxThrowCount: number = 3;
+    private _MaxThrowCount: number = 100;
     private _YatzyScore: number = 50; 
     private _BigStraightScore: number = 40; 
     private _SmallStraightScore: number = 30; 
@@ -60,11 +60,10 @@ export default class GameModel{
         this._gameView.DisableMoveButton();
         this._gameView.DisableToggle(this._currentSelectedToggle);
 
-
-
-        var scoreSum: number = 0;
+        let scoreSum: number = 0;
         if(this._hasFiveIdentical == true && this.CheckIdenticalNumbers(5)){
-            scoreSum += this._YatzyScore;
+            this.AddScore(this._YatzyScore);
+            this._currentSelectedToggle.ShowBonusScore();
         }
         switch(this._currentSelectedToggle.SectionName){
             case SectionsName.One:
@@ -267,7 +266,7 @@ export default class GameModel{
         let hasIdentical = false;
 
         numCounts.forEach((count) => {
-            if (count === amount) {
+            if (count >= amount) {
                 hasIdentical = true;
             }
         });
