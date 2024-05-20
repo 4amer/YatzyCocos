@@ -18,7 +18,7 @@ export class GameView extends Component {
     @property({visible: true, type: RichText}) private _upperSectionBonusScores: RichText = null; 
     @property({visible: true, type: ToggleContainer}) private _toggleContainer: ToggleContainer = null; 
     @property({visible: true, type: [Toggle]}) private _toggles: ExtendedToggle[] = []; 
-    @property({visible: true, type: [RichText]}) private _dices: RichText[] = []; 
+    @property({visible: true, type: [Node]}) private _dices: Node[] = []; 
     @property({visible: true, type: Node}) private _diceLayout: Node = null; 
 
     private _gameModel: GameModel = null;
@@ -124,7 +124,7 @@ export class GameView extends Component {
         this._throwCounter.string = `${number}`;
     }
 
-    public get Dices(): RichText[]{
+    public get Dices(): Node[]{
         return this._dices;
     }
 }

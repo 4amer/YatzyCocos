@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, randomRangeInt, Sprite, Toggle } from 'cc';
+import { _decorator, Component, Node, Quat, randomRangeInt, Sprite, Toggle, tween, Vec3 } from 'cc';
 import { GodSinglton } from '../../Scripts/GodSinglton';
 import { GameView } from '../Views/GameView';
 import { Dice } from '../../Scripts/Dice';
@@ -177,7 +177,11 @@ export default class GameModel{
                 this._stopDicesCounter += 1;
                 continue;
             }
-            this.RollDice(dice, i * 100, i).then(() => {
+            let quat: Quat = new Quat();
+            tween(dice.DiceNode)
+            .to(1.0, { rotation: Quat.fromEuler(quat, 90,90,90)})
+            .start();
+            this.RollDice(dice, 1000, i).then(() => {
                 if(this._stopDicesCounter == this._diceValues.length){
                     this._gameView.EnableThrowButton();
                 }
@@ -192,7 +196,7 @@ export default class GameModel{
             setTimeout(() => {
                 let randomNum = randomRangeInt(1, 7);
                 dice.RequestingValue = randomNum;
-                dice.ChangeTextColorToWhite();
+                //dice.ChangeTextColorToWhite();
                 this._diceValues[diceNumber] = randomNum;
                 dice.SetToActive();
                 this._stopDicesCounter += 1;
@@ -215,7 +219,7 @@ export default class GameModel{
         this._gameView.Dices.forEach((element) => {
             let dice: Dice = element.getComponent(Dice);
             dice.Condition = DiceConditions.unlock;
-            dice.ClearTextField();
+            //dice.ClearTextField();
         });
     }
 

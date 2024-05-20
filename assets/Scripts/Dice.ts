@@ -10,48 +10,48 @@ export class Dice extends Component {
     private WhiteColor: string = "WHITE";
     private RedColor: string = "RED";
 
-    private _richText: RichText = null;
+    //private _richText: RichText = null;
 
     private _isActive = true;
 
     protected onLoad(): void {
-        this.node.on(Input.EventType.TOUCH_END, this.TouchEnd, this);
-        this._richText = this.node.getComponent(RichText);
+        //this.node.on(Input.EventType.MOUSE_UP, this.TouchEnd, this);
+        //this._richText = this.node.getComponent(RichText);
     }
 
     private TouchEnd(): void{
         if(!this._isActive) return;
         if(this._condition == DiceConditions.lock){
             this._condition = DiceConditions.unlock;
-            this.ChangeTextColorToWhite();
+            //this.ChangeTextColorToWhite();
         } 
         else if (this._condition == DiceConditions.unlock) 
         {
             this._condition = DiceConditions.lock;
-            this.ChangeTextColorToRed();
+            //this.ChangeTextColorToRed();
         }
     }   
 
-    private Rewrite(): void{
-        this._richText.string = `${this._requestingValue}`;
-    }
+    // private Rewrite(): void{
+    //     this._richText.string = `${this._requestingValue}`;
+    // }
 
     public Unlock(){
         this._condition = DiceConditions.unlock;
-        this._richText.string = `<color = ${this.WhiteColor}> ${this._requestingValue} <color/>`;
+        //this._richText.string = `<color = ${this.WhiteColor}> ${this._requestingValue} <color/>`;
     }
 
-    public ChangeTextColorToRed(): void{
-        this._richText.string = `<color = ${this.RedColor}> ${this._requestingValue} <color/>`;
-    }
+    // public ChangeTextColorToRed(): void{
+    //     this._richText.string = `<color = ${this.RedColor}> ${this._requestingValue} <color/>`;
+    // }
 
-    public ChangeTextColorToWhite(): void{
-        this._richText.string = `<color = ${this.WhiteColor}> ${this._requestingValue} <color/>`;
-    }
+    // public ChangeTextColorToWhite(): void{
+    //     this._richText.string = `<color = ${this.WhiteColor}> ${this._requestingValue} <color/>`;
+    // }
 
-    public ClearTextField(): void{
-        this._richText.string = "";
-    }
+    // public ClearTextField(): void{
+    //     this._richText.string = "";
+    // }
 
     public SetToDeactive(){
         this._isActive = false;
@@ -71,11 +71,15 @@ export class Dice extends Component {
 
     public set RequestingValue(number: number){
         this._requestingValue = number;
-        this.Rewrite();
+        //this.Rewrite();
     }
 
     public get RequestingValue(): number{
         return this._requestingValue;
+    }
+
+    public get DiceNode(){
+        return this.node;
     }
 }
 
