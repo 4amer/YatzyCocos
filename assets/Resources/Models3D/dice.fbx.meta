@@ -75,7 +75,9 @@
   "userData": {
     "imageMetas": [],
     "fbx": {
-      "smartMaterialEnabled": true
+      "smartMaterialEnabled": true,
+      "animationBakeRate": 0,
+      "preferLocalTimeSpan": true
     },
     "redirect": "1fd767c1-9be3-48cd-9659-96d38b2ae0aa@bb6cc",
     "lods": {
@@ -185,7 +187,99 @@
           {},
           {}
         ]
+      },
+      "1fd767c1-9be3-48cd-9659-96d38b2ae0aa@515b9": {
+        "__type__": "cc.Material",
+        "_name": "",
+        "_objFlags": 0,
+        "__editorExtras__": {},
+        "_native": "",
+        "_effectAsset": {
+          "__uuid__": "f648964e-8d32-41fc-9ac9-7a1e714dd17b",
+          "__expectedType__": "cc.EffectAsset"
+        },
+        "_techIdx": 0,
+        "_defines": [
+          {
+            "USE_INSTANCING": true,
+            "DCC_APP_NAME": 2,
+            "HAS_EXPORTED_METALLIC": true
+          },
+          {},
+          {},
+          {}
+        ],
+        "_states": [
+          {
+            "rasterizerState": {},
+            "depthStencilState": {},
+            "blendState": {
+              "targets": [
+                {}
+              ]
+            }
+          },
+          {
+            "rasterizerState": {},
+            "depthStencilState": {},
+            "blendState": {
+              "targets": [
+                {}
+              ]
+            }
+          },
+          {
+            "rasterizerState": {},
+            "depthStencilState": {},
+            "blendState": {
+              "targets": [
+                {}
+              ]
+            }
+          },
+          {
+            "rasterizerState": {},
+            "depthStencilState": {},
+            "blendState": {
+              "targets": [
+                {}
+              ]
+            }
+          }
+        ],
+        "_props": [
+          {
+            "mainColor": {
+              "__type__": "cc.Color",
+              "r": 231,
+              "g": 231,
+              "b": 231,
+              "a": 255
+            },
+            "shininessExponent": 20,
+            "transparencyFactor": 0,
+            "metallic": 1
+          },
+          {},
+          {},
+          {}
+        ]
       }
+    },
+    "morphNormals": 1,
+    "normals": 3,
+    "tangents": 0,
+    "meshOptimize": {
+      "enable": false
+    },
+    "meshSimplify": {
+      "enable": false
+    },
+    "meshCluster": {
+      "enable": false
+    },
+    "meshCompress": {
+      "enable": false
     }
   }
 }

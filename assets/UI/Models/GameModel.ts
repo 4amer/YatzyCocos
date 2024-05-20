@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Quat, randomRangeInt, Sprite, Toggle, tween, Vec3 } from 'cc';
+import { _decorator, Component, lerp, Node, Quat, random, randomRangeInt, Sprite, Toggle, tween, Vec3 } from 'cc';
 import { GodSinglton } from '../../Scripts/GodSinglton';
 import { GameView } from '../Views/GameView';
 import { Dice } from '../../Scripts/Dice';
@@ -12,7 +12,7 @@ export default class GameModel{
     private _gameView: GameView = null;
     
     private static GameModel: GameModel = null;
-    private _MaxThrowCount: number = 100;
+    private _MaxThrowCount: number = 3;
     private _YatzyScore: number = 50; 
     private _BigStraightScore: number = 40; 
     private _SmallStraightScore: number = 30; 
@@ -177,11 +177,10 @@ export default class GameModel{
                 this._stopDicesCounter += 1;
                 continue;
             }
-            let quat: Quat = new Quat();
-            tween(dice.DiceNode)
-            .to(1.0, { rotation: Quat.fromEuler(quat, 90,90,90)})
-            .start();
-            this.RollDice(dice, 1000, i).then(() => {
+
+            this.DoTweenForDice(dice);
+
+            this.RollDice(dice, 2000, i).then(() => {
                 if(this._stopDicesCounter == this._diceValues.length){
                     this._gameView.EnableThrowButton();
                 }
@@ -192,9 +191,9 @@ export default class GameModel{
     private async RollDice(dice: Dice, rollTimeMs: number, diceNumber: number): Promise<void> {
         return new Promise((resolve, reject) => {
             dice.SetToDeactive();
-        
+            let randomNum = randomRangeInt(1, 7);
+            dice.RollToNumber(randomNum);
             setTimeout(() => {
-                let randomNum = randomRangeInt(1, 7);
                 dice.RequestingValue = randomNum;
                 //dice.ChangeTextColorToWhite();
                 this._diceValues[diceNumber] = randomNum;
@@ -276,6 +275,29 @@ export default class GameModel{
         });
 
         return hasIdentical;
+    }
+
+    private DoTweenForDice(dice: Dice){
+        let rotationDirections: Vec3 = new Vec3();
+
+        const rotationValues: number[] = [-720, -360 , 360, 720];
+
+        rotationDirections.x = rotationValues[Math.floor(Math.random()*rotationValues.length)];
+        rotationDirections.y = rotationValues[Math.floor(Math.random()*rotationValues.length)];
+        rotationDirections.z = rotationValues[Math.floor(Math.random()*rotationValues.length)];
+
+        let tween1 = tween(dice.DiceNode).to(2, {
+                eulerAngles: rotationDirections,
+                }, { easing: 'quadOut' });
+
+        let tween2 = tween(dice.DiceNode).to(2, {
+                scale: new Vec3(1, 1, 1),
+                }, { easing: 'bounceOut' });
+
+        dice.DiceNode.scale = new Vec3(1.4, 1.4, 1.4);
+        dice.DiceNode.rotation = new Quat(0, 0, 0);
+
+        tween(dice.DiceNode).parallel(tween1, tween2).start();
     }
 
     private CheckFullHouse(): boolean {
