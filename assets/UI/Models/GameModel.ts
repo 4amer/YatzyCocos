@@ -156,8 +156,8 @@ export default class GameModel{
         console.log(scoreSum);
         this._currentSelectedToggle.ScoreText = `${scoreSum}`;
         this.ChangeScoreTextOnView();
-        this._gameView.DisableDiceLayout();
-        this._gameView.EnableThrowDiceText();
+        this._gameView.DeactivateDiceLayout();
+        this._gameView.ActivateThrowDiceText();
         this.ToggleContainerActive(false);
         this.UnlockAllDice();
     }
@@ -167,8 +167,10 @@ export default class GameModel{
         this._stopDicesCounter = 0;
         this._throwCount -= 1;
         this.ToggleContainerActive(true);
-        this._gameView.EnableDiceLayout();
-        this._gameView.DisableThrowDiceText();
+
+        this._gameView.DeactivateDiceLayout();
+
+        this._gameView.DeactivateThrowDiceText();
         this._gameView.DisableThrowButton();
         this._gameView.ThrowCounter = this._throwCount;
         for(let i = 0; i < this._gameView.Dices.length; i++){
@@ -183,6 +185,7 @@ export default class GameModel{
             this.RollDice(dice, 2000, i).then(() => {
                 if(this._stopDicesCounter == this._diceValues.length){
                     this._gameView.EnableThrowButton();
+                    this._gameView.ActivateDiceLayout();
                 }
             });
         }

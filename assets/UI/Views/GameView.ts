@@ -25,8 +25,8 @@ export class GameView extends Component {
 
     protected start(): void {
         this.DisableMoveButton();
-        this.DisableDiceLayout();
-        this.EnableThrowDiceText();
+        this.DeactivateDiceLayout();
+        this.ActivateThrowDiceText();
         this.DoAllEnabledToggleInteractable(false);
         this.ToggleContainerActive(false);
     }
@@ -72,19 +72,19 @@ export class GameView extends Component {
         toggle.IsDisable = true;
     }
 
-    public DisableDiceLayout(){
+    public DeactivateDiceLayout(){
         this._diceLayout.active = false;
     }
 
-    public EnableDiceLayout(){
+    public ActivateDiceLayout(){
         this._diceLayout.active = true;
     }
 
-    public DisableThrowDiceText(){
+    public DeactivateThrowDiceText(){
         this._throwDiceText.node.active = false;
     }
 
-    public EnableThrowDiceText(){
+    public ActivateThrowDiceText(){
         this._throwDiceText.node.active = true;
     }
 
