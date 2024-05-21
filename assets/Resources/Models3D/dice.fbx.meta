@@ -280,6 +280,10 @@
     },
     "meshCompress": {
       "enable": false
-    }
+    },
+    "dumpMaterials": false,
+    "materialDumpDir": "db://assets/Resources/Models3D/Materials_dice",
+    "useVertexColors": false,
+    "depthWriteInAlphaModeBlend": false
   }
 }

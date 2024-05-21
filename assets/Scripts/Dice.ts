@@ -1,4 +1,4 @@
-import { _decorator, CCInteger, Color, ColorKey, Component, Enum, Input, Node, Quat, RichText, tween, Vec3} from 'cc';
+import { _decorator, CCInteger, Color, ColorKey, Component, Enum, Input, Node, Quat, RichText, tween, TweenAction, TweenSystem, Vec3} from 'cc';
 import { DiceConditions } from './Enums/DiceConditions';
 const { ccclass, property } = _decorator;
 
@@ -9,7 +9,8 @@ export class Dice extends Component {
     
     @property({visible: true, type: Node}) private _DiceChildren: Node = null;
 
-    @property({visible: true, type: Node}) private _NodeForClickEvent: Node = null;
+    @property({visible: true, type: Node}) private _diceLandingPoint: Node = null;
+    @property({visible: true, type: Node}) private _defaultLandingPoint: Node = null;
 
     @property({visible: true, type: Node}) private _nodeOne: Node = null;
     @property({visible: true, type: Node}) private _nodeTwo: Node = null;
@@ -21,32 +22,25 @@ export class Dice extends Component {
     private WhiteColor: string = "WHITE";
     private RedColor: string = "RED";
 
-    //private _richText: RichText = null;
-
     private _isActive = true;
 
     protected onLoad(): void {
-        this._NodeForClickEvent.on(Input.EventType.TOUCH_END, this.TouchEnd, this);
-        //this._richText = this.node.getComponent(RichText);
+        this._diceLandingPoint.on(Input.EventType.TOUCH_END, this.TouchEnd, this);
     }
 
     private TouchEnd(): void{
         console.log("WasClicked");
         if(!this._isActive) return;
-        if(this._condition == DiceConditions.lock){
+        if(this._condition == DiceConditions.lock && this.HasActiveTween(this.DiceNode) == false){
             this._condition = DiceConditions.unlock;
             this.ChangeVisualToUnlock();
         } 
-        else if (this._condition == DiceConditions.unlock) 
+        else if (this._condition == DiceConditions.unlock && this.HasActiveTween(this.DiceNode) == false) 
         {
             this._condition = DiceConditions.lock;
             this.ChangeVisualToLock();
         }
     }   
-
-    // private Rewrite(): void{
-    //     this._richText.string = `${this._requestingValue}`;
-    // }
 
     public Unlock(){
         this._condition = DiceConditions.unlock;
@@ -56,7 +50,6 @@ export class Dice extends Component {
     public ChangeVisualToUnlock(): void{
         
         let nodeRotation: Vec3 = this.DiceNode.eulerAngles;
-        //Quat.toEuler(nodeRotation, this.DiceNode.getWorldRotation());
 
         tween(this.DiceNode).to(0.5,{
             eulerAngles: new Vec3(nodeRotation.x - 20, nodeRotation.y, nodeRotation.z)
@@ -72,37 +65,12 @@ export class Dice extends Component {
         }, { easing: 'quintOut'}).start();
     }
 
-    // public ClearTextField(): void{
-    //     this._richText.string = "";
-    // }
-
-    public SetToDeactive(){
-        this._isActive = false;
-    }
-
-    public SetToActive(){
-        this._isActive = true;
-    }
-
-    public set Condition(condition: DiceConditions){
-        this._condition = condition;
-    }
-
-    public get Condition(): DiceConditions{
-        return this._condition;
-    }
-
-    public set RequestingValue(number: number){
-        this._requestingValue = number;
-        //this.Rewrite();
-    }
-
-    public get RequestingValue(): number{
-        return this._requestingValue;
-    }
-
-    public get DiceNode(){
-        return this.node;
+    private HasActiveTween(node: Node): boolean {
+        const tweens = TweenSystem.instance.ActionManager;
+        if(tweens.getNumberOfRunningActionsInTarget(node) > 0){
+            return true;
+        }
+        return false;
     }
 
     public RollToNumber(number: number){
@@ -127,6 +95,46 @@ export class Dice extends Component {
                 this._DiceChildren.lookAt(this._nodeSix.worldPosition);
                 break;
         }
+    }
+    
+    public SetToDeactive(){
+        this._isActive = false;
+    }
+    
+    public SetToActive(){
+        this._isActive = true;
+    }
+
+    public SetLandingPointByDefault(){
+        this._diceLandingPoint.setWorldPosition(this._defaultLandingPoint.getWorldPosition());
+    }
+    
+    public set Condition(condition: DiceConditions){
+        this._condition = condition;
+    }
+
+    public get Condition(): DiceConditions{
+        return this._condition;
+    }
+    
+    public set RequestingValue(number: number){
+        this._requestingValue = number;
+    }
+
+    public get RequestingValue(): number{
+        return this._requestingValue;
+    }
+    
+    public get DiceNode(){
+        return this.node;
+    }
+
+    public set DiceLandingPointWorldPosition(position :Vec3){
+        this._diceLandingPoint.setWorldPosition(position);
+    }
+
+    public get DiceLandingPointWorldPosition(): Vec3{
+        return this._diceLandingPoint.getWorldPosition();
     }
 }
 

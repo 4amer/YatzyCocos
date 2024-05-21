@@ -1,4 +1,4 @@
-import { _decorator, Component, lerp, Node, Quat, random, randomRangeInt, Sprite, Toggle, tween, Vec3 } from 'cc';
+import { _decorator, Component, lerp, Node, Quat, random, randomRange, randomRangeInt, Sprite, Toggle, tween, Vec3 } from 'cc';
 import { GodSinglton } from '../../Scripts/GodSinglton';
 import { GameView } from '../Views/GameView';
 import { Dice } from '../../Scripts/Dice';
@@ -278,26 +278,48 @@ export default class GameModel{
     }
 
     private DoTweenForDice(dice: Dice){
+
+        dice.SetLandingPointByDefault();
+
         let rotationDirections: Vec3 = new Vec3();
 
         const rotationValues: number[] = [-720, -360 , 360, 720];
+
+        const diceNodeWorldPosition : Vec3 = dice.DiceNode.getWorldPosition();
+
+        const throwDirection: Vec3 = new Vec3(diceNodeWorldPosition.x, diceNodeWorldPosition.y + 400, diceNodeWorldPosition.z);
+
+        const landingPosition: Vec3 = dice.DiceLandingPointWorldPosition;
+
+        let newLandingPositionPosition: Vec3 = new Vec3();
+
+        newLandingPositionPosition.x = landingPosition.x + randomRangeInt(-20,20);
+        newLandingPositionPosition.y = landingPosition.y + randomRangeInt(-50,50);
+        newLandingPositionPosition.z = landingPosition.z;
 
         rotationDirections.x = rotationValues[Math.floor(Math.random()*rotationValues.length)];
         rotationDirections.y = rotationValues[Math.floor(Math.random()*rotationValues.length)];
         rotationDirections.z = rotationValues[Math.floor(Math.random()*rotationValues.length)];
 
-        let tween1 = tween(dice.DiceNode).to(2, {
+        dice.DiceLandingPointWorldPosition = newLandingPositionPosition;
+
+        let rotationTween = tween(dice.DiceNode).to(2, {
                 eulerAngles: rotationDirections,
                 }, { easing: 'quadOut' });
 
-        let tween2 = tween(dice.DiceNode).to(2, {
+        let scaleTween = tween(dice.DiceNode).to(2, {
                 scale: new Vec3(1, 1, 1),
                 }, { easing: 'bounceOut' });
+        
+        let positionScale = tween(dice.DiceNode).to(2, {
+                worldPosition: dice.DiceLandingPointWorldPosition,
+                }, { easing: 'sineOut' });
 
-        dice.DiceNode.scale = new Vec3(1.4, 1.4, 1.4);
-        dice.DiceNode.rotation = new Quat(0, 0, 0);
+        dice.DiceNode.worldScale = new Vec3(2, 2, 2);
+        dice.DiceNode.worldRotation = new Quat(0, 0, 0);
+        dice.DiceNode.worldPosition = throwDirection;
 
-        tween(dice.DiceNode).parallel(tween1, tween2).start();
+        tween(dice.DiceNode).parallel(rotationTween, scaleTween, positionScale).start();
     }
 
     private CheckFullHouse(): boolean {
@@ -331,6 +353,7 @@ export default class GameModel{
         let straight:number = 0;
         let isStraight: boolean = false;
         let minNum: number = Math.min(...this._diceValues);
+
         for(let i = 0; i < this._diceValues.length; i++){
             let nextNum: number = 0;
             let nextNumIndex: number = this._diceValues.indexOf((minNum + i));
