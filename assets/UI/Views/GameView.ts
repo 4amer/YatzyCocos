@@ -4,10 +4,11 @@ import { GodSinglton } from '../../Scripts/GodSinglton';
 import { Dice } from '../../Scripts/Dice';
 import { SectionsName } from '../../Scripts/Enums/SectionsName';
 import { ExtendedToggle } from '../../Scripts/ExtendedToggle';
+import { AbstractView } from './AbstractView';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameView')
-export class GameView extends Component {
+export class GameView extends AbstractView {
     @property({visible: true, type: Button}) private _moveButton: Button = null; 
     @property({visible: true, type: Button}) private _throwButton: Button = null; 
     @property({visible: true, type: RichText}) private _throwCounter: RichText = null; 
@@ -20,15 +21,26 @@ export class GameView extends Component {
     @property({visible: true, type: [Toggle]}) private _toggles: ExtendedToggle[] = []; 
     @property({visible: true, type: [Node]}) private _dices: Node[] = []; 
     @property({visible: true, type: Node}) private _diceLayout: Node = null; 
+    @property({visible: true, type: Node}) private _dicePositionsNode: Node = null; 
 
     private _gameModel: GameModel = null;
 
     protected start(): void {
+        this.StartNewGame();
+    }
+
+    public StartNewGame(){
         this.DisableMoveButton();
         this.DeactivateDiceLayout();
+        this.DeactivateDicePositionsNode();
         this.ActivateThrowDiceText();
+        this.AllTogglesbyDefault()
         this.DoAllEnabledToggleInteractable(false);
         this.ToggleContainerActive(false);
+        this.ChangeSumForLowerSectionValue(0);
+        this.ChangeSumForUpperSectionValue(0);
+        this.ChangeUpperSectionBonusScoresValue(0);
+        this.Score = 0;
     }
 
     private NextMove(): void{
@@ -88,6 +100,15 @@ export class GameView extends Component {
         this._throwDiceText.node.active = true;
     }
 
+    public DeactivateDicePositionsNode(){
+        this._dicePositionsNode.active = false;
+    }
+
+    public ActivateDicePositionsNode(){
+        this._dicePositionsNode.active = true;
+    }
+
+
     public ChangeUpperSectionBonusScoresValue(number: number){
         this._upperSectionBonusScores.string = `${number}`;
     }
@@ -105,6 +126,18 @@ export class GameView extends Component {
             if(!element.IsDisable){
                 element.interactable = bool;
             }
+        })
+    }
+
+    public AllTogglesbyDefault(){
+        this.ToggleContainerAllowSwitchOff = true;
+        this._toggles.forEach((element) => {
+            element.getComponent(Sprite).color = element.normalColor;
+            element.IsDisable = false;
+            element.isChecked = false;
+            element.interactable = true;
+            element.ScoreText = '0';
+            element.HideBonusScore();
         })
     }
 

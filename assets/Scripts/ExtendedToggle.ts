@@ -17,12 +17,20 @@ export class ExtendedToggle extends Toggle {
         this._bonusScoreText.node.active = true;
     }
 
+    public HideBonusScore(){
+        this._bonusScoreText.node.active = false;
+    }
+
     public set ScoreText(text: string){
         this._scoreText.string = text;
     }
 
     public set IsDisable(bool: boolean){
         this._isDisable = bool;
+    }
+
+    public get IsDisable(): boolean{
+        return this._isDisable;
     }
 
     public get SectionName(): SectionsName{

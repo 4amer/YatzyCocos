@@ -5,11 +5,14 @@ import { Dice } from '../../Scripts/Dice';
 import { DiceConditions } from '../../Scripts/Enums/DiceConditions';
 import { SectionsName } from '../../Scripts/Enums/SectionsName';
 import { ExtendedToggle } from '../../Scripts/ExtendedToggle';
+import { RestartView } from '../Views/RestartView';
+import { WindowTypes } from '../WindowTypes/WindowTypes';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameModel')
 export default class GameModel{
     private _gameView: GameView = null;
+    private _restartView: RestartView = null;
     
     private static GameModel: GameModel = null;
     private _MaxThrowCount: number = 3;
@@ -25,6 +28,7 @@ export default class GameModel{
     private _hasUpperSectionBonus: boolean = true;
 
     private _hasFiveIdentical: boolean = false;
+    private _isDiceRolling = false;
 
     private _throwCount: number = 3;
     private _currentSelectedToggle: ExtendedToggle = null;
@@ -34,11 +38,17 @@ export default class GameModel{
 
     private _stopDicesCounter: number = 0;
 
+    private _LastMove: number = 13;
+    private _moveCounter: number = 0;
+
     private constructor(){
         this._gameView = GodSinglton.gameView;
         this._gameView.node.on("Throw", this.WhenThrowButtonClicked, this);
         this._gameView.node.on("Move", this.WhenMoveButtonClicked, this);
         this._gameView.node.on("ToggleSelected", this.WhenToggleSelected, this);
+
+        this._restartView = GodSinglton.restartView;
+        this._restartView.node.on("Restart", this.RestartGame, this);
     }
 
     public static get Instance(): GameModel{
@@ -50,11 +60,15 @@ export default class GameModel{
 
     private WhenToggleSelected(toggle: ExtendedToggle): void{
         this._gameView.ToggleContainerAllowSwitchOff = false;
-        this._gameView.EnableMoveButton();
         this._currentSelectedToggle = toggle;
+
+        if(this._isDiceRolling == true) return;
+        this._gameView.EnableMoveButton();
     }
 
     private WhenMoveButtonClicked(): void{
+        this._moveCounter += 1;
+
         this.ThrowCoutnerByDefault();
         this._gameView.ToggleContainerAllowSwitchOff = true;
         this._gameView.DisableMoveButton();
@@ -157,18 +171,28 @@ export default class GameModel{
         this._currentSelectedToggle.ScoreText = `${scoreSum}`;
         this.ChangeScoreTextOnView();
         this._gameView.DeactivateDiceLayout();
+        this._gameView.DeactivateDicePositionsNode();
         this._gameView.ActivateThrowDiceText();
         this.ToggleContainerActive(false);
         this.UnlockAllDice();
+        
+        if(this._moveCounter >= this._LastMove){
+            GodSinglton.viewManager.Show(WindowTypes.RestartView);
+            this._restartView.FinalScore = this._currentScore;
+            return;
+        }
     }
 
     private WhenThrowButtonClicked(): void{
         if(this._throwCount <= 0) return;
+        this._isDiceRolling = true;
         this._stopDicesCounter = 0;
         this._throwCount -= 1;
         this.ToggleContainerActive(true);
 
-        this._gameView.DeactivateDiceLayout();
+        this._gameView.ActivateDiceLayout();
+        this._gameView.DeactivateDicePositionsNode();
+        this._gameView.DisableMoveButton();
 
         this._gameView.DeactivateThrowDiceText();
         this._gameView.DisableThrowButton();
@@ -185,7 +209,9 @@ export default class GameModel{
             this.RollDice(dice, 2000, i).then(() => {
                 if(this._stopDicesCounter == this._diceValues.length){
                     this._gameView.EnableThrowButton();
-                    this._gameView.ActivateDiceLayout();
+                    this._gameView.ActivateDicePositionsNode();
+                    this._gameView.EnableMoveButton();
+                    this._isDiceRolling = false;
                 }
             });
         }
@@ -198,7 +224,6 @@ export default class GameModel{
             dice.RollToNumber(randomNum);
             setTimeout(() => {
                 dice.RequestingValue = randomNum;
-                //dice.ChangeTextColorToWhite();
                 this._diceValues[diceNumber] = randomNum;
                 dice.SetToActive();
                 this._stopDicesCounter += 1;
@@ -221,7 +246,6 @@ export default class GameModel{
         this._gameView.Dices.forEach((element) => {
             let dice: Dice = element.getComponent(Dice);
             dice.Condition = DiceConditions.unlock;
-            //dice.ClearTextField();
         });
     }
 
@@ -285,13 +309,9 @@ export default class GameModel{
         dice.SetLandingPointByDefault();
 
         let rotationDirections: Vec3 = new Vec3();
-
         const rotationValues: number[] = [-720, -360 , 360, 720];
-
         const diceNodeWorldPosition : Vec3 = dice.DiceNode.getWorldPosition();
-
         const throwDirection: Vec3 = new Vec3(diceNodeWorldPosition.x, diceNodeWorldPosition.y + 400, diceNodeWorldPosition.z);
-
         const landingPosition: Vec3 = dice.DiceLandingPointWorldPosition;
 
         let newLandingPositionPosition: Vec3 = new Vec3();
@@ -374,5 +394,19 @@ export default class GameModel{
         }
 
         return isStraight;
+    }
+
+    private AllScouresAndCountersByDefault(): void{
+        this._lowerSectionScoreCounter = 0;
+        this._upperSectionScoreCounter = 0;
+        this._currentScore = 0;
+        this._moveCounter = 0;
+        this.ThrowCoutnerByDefault();
+    }
+    
+    private RestartGame(): void{
+        this.AllScouresAndCountersByDefault();
+        this._gameView.StartNewGame();
+        GodSinglton.viewManager.Hide(WindowTypes.RestartView);
     }
 }
