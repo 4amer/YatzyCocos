@@ -7,6 +7,7 @@ import { SectionsName } from '../../Scripts/Enums/SectionsName';
 import { ExtendedToggle } from '../../Scripts/ExtendedToggle';
 import { RestartView } from '../Views/RestartView';
 import { WindowTypes } from '../WindowTypes/WindowTypes';
+import { SoundNames } from '../../Scripts/AudioManager/SoundNames/SoundNames';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameModel')
@@ -59,6 +60,7 @@ export default class GameModel{
     }
 
     private WhenToggleSelected(toggle: ExtendedToggle): void{
+        GodSinglton.audioManager.Play(SoundNames.ButtonClicked);
         this._gameView.ToggleContainerAllowSwitchOff = false;
         this._currentSelectedToggle = toggle;
 
@@ -67,6 +69,7 @@ export default class GameModel{
     }
 
     private WhenMoveButtonClicked(): void{
+        GodSinglton.audioManager.Play(SoundNames.NextMove);
         this._moveCounter += 1;
 
         this.ThrowCoutnerByDefault();
@@ -175,8 +178,9 @@ export default class GameModel{
         this._gameView.ActivateThrowDiceText();
         this.ToggleContainerActive(false);
         this.UnlockAllDice();
-        
+        this._currentSelectedToggle = null;
         if(this._moveCounter >= this._LastMove){
+            GodSinglton.audioManager.Play(SoundNames.Congratulation);
             GodSinglton.viewManager.Show(WindowTypes.RestartView);
             this._restartView.FinalScore = this._currentScore;
             return;
@@ -185,6 +189,7 @@ export default class GameModel{
 
     private WhenThrowButtonClicked(): void{
         if(this._throwCount <= 0) return;
+        GodSinglton.audioManager.Play(SoundNames.ButtonClicked);
         this._isDiceRolling = true;
         this._stopDicesCounter = 0;
         this._throwCount -= 1;
@@ -197,6 +202,7 @@ export default class GameModel{
         this._gameView.DeactivateThrowDiceText();
         this._gameView.DisableThrowButton();
         this._gameView.ThrowCounter = this._throwCount;
+        GodSinglton.audioManager.Play(SoundNames.DiceThrow);
         for(let i = 0; i < this._gameView.Dices.length; i++){
             let dice: Dice = this._gameView.Dices[i].getComponent(Dice);
             if(dice.Condition == DiceConditions.lock) {
@@ -205,13 +211,14 @@ export default class GameModel{
             }
 
             this.DoTweenForDice(dice);
-
-            this.RollDice(dice, 2000, i).then(() => {
+            this.RollDice(dice, 1300, i).then(() => {
                 if(this._stopDicesCounter == this._diceValues.length){
                     this._gameView.EnableThrowButton();
                     this._gameView.ActivateDicePositionsNode();
-                    this._gameView.EnableMoveButton();
                     this._isDiceRolling = false;
+                    if(this._currentSelectedToggle != null){
+                        this._gameView.EnableMoveButton();
+                    }
                 }
             });
         }
@@ -307,6 +314,7 @@ export default class GameModel{
     private DoTweenForDice(dice: Dice){
 
         dice.SetLandingPointByDefault();
+        const tweenTime: number = 1.3;
 
         let rotationDirections: Vec3 = new Vec3();
         const rotationValues: number[] = [-720, -360 , 360, 720];
@@ -326,15 +334,15 @@ export default class GameModel{
 
         dice.DiceLandingPointWorldPosition = newLandingPositionPosition;
 
-        let rotationTween = tween(dice.DiceNode).to(2, {
+        let rotationTween = tween(dice.DiceNode).to(tweenTime, {
                 eulerAngles: rotationDirections,
                 }, { easing: 'quadOut' });
 
-        let scaleTween = tween(dice.DiceNode).to(2, {
+        let scaleTween = tween(dice.DiceNode).to(tweenTime, {
                 scale: new Vec3(1, 1, 1),
                 }, { easing: 'bounceOut' });
         
-        let positionScale = tween(dice.DiceNode).to(2, {
+        let positionScale = tween(dice.DiceNode).to(tweenTime, {
                 worldPosition: dice.DiceLandingPointWorldPosition,
                 }, { easing: 'sineOut' });
 
@@ -405,6 +413,7 @@ export default class GameModel{
     }
     
     private RestartGame(): void{
+        GodSinglton.audioManager.Play(SoundNames.ButtonClicked);
         this.AllScouresAndCountersByDefault();
         this._gameView.StartNewGame();
         GodSinglton.viewManager.Hide(WindowTypes.RestartView);
