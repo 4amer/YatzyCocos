@@ -1,5 +1,5 @@
 import { CCClass, _decorator, Button, Component, Node, RichText, Toggle, find, Label, ToggleContainer, Sprite } from 'cc';
-import GameModel from '../Models/GameModel';
+import YatzyModel from '../Models/YatzyModel';
 import { GodSinglton } from '../../Scripts/GodSinglton';
 import { Dice } from '../../Scripts/Dice';
 import { SectionsName } from '../../Scripts/Enums/SectionsName';
@@ -7,8 +7,8 @@ import { ExtendedToggle } from '../../Scripts/ExtendedToggle';
 import { AbstractView } from './AbstractView';
 const { ccclass, property } = _decorator;
 
-@ccclass('GameView')
-export class GameView extends AbstractView {
+@ccclass('YatzyView')
+export class YatzyView extends AbstractView {
     @property({visible: true, type: Button}) private _moveButton: Button = null; 
     @property({visible: true, type: Button}) private _throwButton: Button = null; 
     @property({visible: true, type: RichText}) private _throwCounter: RichText = null; 
@@ -23,7 +23,7 @@ export class GameView extends AbstractView {
     @property({visible: true, type: Node}) private _diceLayout: Node = null; 
     @property({visible: true, type: Node}) private _dicePositionsNode: Node = null; 
 
-    private _gameModel: GameModel = null;
+    private _yatzyModel: YatzyModel = null;
 
     protected start(): void {
         this.StartNewGame();

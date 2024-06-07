@@ -1,7 +1,8 @@
 export enum WindowTypes{
     None = 0,
-    GameView = 1,
+    YatzyView = 1,
     RestartView = 2,
+    ZonkView = 3,
 }
 
 

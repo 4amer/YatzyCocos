@@ -1,16 +1,17 @@
-import { _decorator, CCInteger, Color, ColorKey, Component, Enum, Input, Node, Quat, RichText, tween, TweenAction, TweenSystem, Vec3} from 'cc';
+import { _decorator, CCInteger, Color, ColorKey, Component, Enum, Input, Node, Quat, RichText, tween, TweenAction, TweenSystem, UITransform, Vec2, Vec3} from 'cc';
 import { DiceConditions } from './Enums/DiceConditions';
 const { ccclass, property } = _decorator;
 
 @ccclass('DiceInfo')
 export class Dice extends Component {
-    @property({visible: true, type: Enum(DiceConditions)}) private _condition: DiceConditions = DiceConditions.lock;
+    @property({visible: true, type: Enum(DiceConditions)}) private _condition: DiceConditions = DiceConditions.picked;
     @property({visible: true, type: CCInteger}) private _requestingValue: number = 1;
     
     @property({visible: true, type: Node}) private _DiceChildren: Node = null;
 
     @property({visible: true, type: Node}) private _diceLandingPoint: Node = null;
     @property({visible: true, type: Node}) private _defaultLandingPoint: Node = null;
+    @property({visible: true, type: Node}) private _throwPosition: Node = null;
 
     @property({visible: true, type: Node}) private _nodeOne: Node = null;
     @property({visible: true, type: Node}) private _nodeTwo: Node = null;
@@ -19,35 +20,37 @@ export class Dice extends Component {
     @property({visible: true, type: Node}) private _nodeFive: Node = null;
     @property({visible: true, type: Node}) private _nodeSix: Node = null;
 
-    private WhiteColor: string = "WHITE";
-    private RedColor: string = "RED";
-
     private _isActive = true;
+    private _defaultLandingUITransform: UITransform = null;
+
+    private _DiceHeight: number = 100;
+    private _DiceWight: number = 100;
 
     protected onLoad(): void {
         this._diceLandingPoint.on(Input.EventType.TOUCH_END, this.TouchEnd, this);
+        this._defaultLandingUITransform =  this._defaultLandingPoint.getComponent(UITransform);
     }
 
     private TouchEnd(): void{
         console.log("WasClicked");
         if(!this._isActive) return;
-        if(this._condition == DiceConditions.lock && this.HasActiveTween(this.DiceNode) == false){
-            this._condition = DiceConditions.unlock;
-            this.ChangeVisualToUnlock();
+        if(this._condition == DiceConditions.picked && this.HasActiveTween(this.DiceNode) == false){
+            this._condition = DiceConditions.unpicked;
+            this.ChangeVisualToUnpicked();
         } 
-        else if (this._condition == DiceConditions.unlock && this.HasActiveTween(this.DiceNode) == false) 
+        else if (this._condition == DiceConditions.unpicked && this.HasActiveTween(this.DiceNode) == false) 
         {
-            this._condition = DiceConditions.lock;
-            this.ChangeVisualToLock();
+            this._condition = DiceConditions.picked;
+            this.ChangeVisualToPicked();
         }
     }   
 
     public Unlock(){
-        this._condition = DiceConditions.unlock;
-        this.ChangeVisualToUnlock();
+        this._condition = DiceConditions.unpicked;
+        this.ChangeVisualToUnpicked();
     }
 
-    public ChangeVisualToUnlock(): void{
+    public ChangeVisualToUnpicked(): void{
         
         let nodeRotation: Vec3 = this.DiceNode.eulerAngles;
 
@@ -56,7 +59,7 @@ export class Dice extends Component {
         }, { easing: 'quintOut'}).start();
     }
 
-    public ChangeVisualToLock(): void{
+    public ChangeVisualToPicked(): void{
         
         let nodeRotation: Vec3 = this.DiceNode.eulerAngles;
 
@@ -136,6 +139,19 @@ export class Dice extends Component {
     public get DiceLandingPointWorldPosition(): Vec3{
         return this._diceLandingPoint.getWorldPosition();
     }
+
+    public get ThrowPosition(): Vec3{
+        return this._throwPosition.getWorldPosition();
+    }
+    
+    public get RangeForLanding(): Vec2{
+        let x: number = (this._defaultLandingUITransform.contentSize.width - this._DiceWight) / 2;
+        let y: number = (this._defaultLandingUITransform.contentSize.height - this._DiceHeight) / 2;
+        if(x <= 0){
+            x = 0;
+        } else if(y <= 0){
+            y = 0;
+        } 
+        return new Vec2(x, y);
+    }
 }
-
-

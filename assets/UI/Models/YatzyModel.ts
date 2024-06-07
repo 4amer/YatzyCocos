@@ -1,6 +1,6 @@
-import { _decorator, Component, lerp, Node, Quat, random, randomRange, randomRangeInt, Sprite, Toggle, tween, Vec3 } from 'cc';
+import { _decorator, Component, lerp, Node, Quat, random, randomRange, randomRangeInt, Sprite, Toggle, tween, Vec2, Vec3 } from 'cc';
 import { GodSinglton } from '../../Scripts/GodSinglton';
-import { GameView } from '../Views/GameView';
+import { YatzyView } from '../Views/YatzyView';
 import { Dice } from '../../Scripts/Dice';
 import { DiceConditions } from '../../Scripts/Enums/DiceConditions';
 import { SectionsName } from '../../Scripts/Enums/SectionsName';
@@ -10,12 +10,12 @@ import { WindowTypes } from '../WindowTypes/WindowTypes';
 import { SoundNames } from '../../Scripts/AudioManager/SoundNames/SoundNames';
 const { ccclass, property } = _decorator;
 
-@ccclass('GameModel')
-export default class GameModel{
-    private _gameView: GameView = null;
+@ccclass('YatzyModel')
+export default class YatzyModel{
+    private _yatzyView: YatzyView = null;
     private _restartView: RestartView = null;
     
-    private static GameModel: GameModel = null;
+    private static GameModel: YatzyModel = null;
     private _MaxThrowCount: number = 3;
     private _YatzyScore: number = 50; 
     private _BigStraightScore: number = 40; 
@@ -43,29 +43,29 @@ export default class GameModel{
     private _moveCounter: number = 0;
 
     private constructor(){
-        this._gameView = GodSinglton.gameView;
-        this._gameView.node.on("Throw", this.WhenThrowButtonClicked, this);
-        this._gameView.node.on("Move", this.WhenMoveButtonClicked, this);
-        this._gameView.node.on("ToggleSelected", this.WhenToggleSelected, this);
+        this._yatzyView = GodSinglton.yatzyView;
+        this._yatzyView.node.on("Throw", this.WhenThrowButtonClicked, this);
+        this._yatzyView.node.on("Move", this.WhenMoveButtonClicked, this);
+        this._yatzyView.node.on("ToggleSelected", this.WhenToggleSelected, this);
 
         this._restartView = GodSinglton.restartView;
         this._restartView.node.on("Restart", this.RestartGame, this);
     }
 
-    public static get Instance(): GameModel{
+    public static get Instance(): YatzyModel{
         if(this.GameModel == null){
-            this.GameModel = new GameModel();
+            this.GameModel = new YatzyModel();
         }
         return this.GameModel;
     }
 
     private WhenToggleSelected(toggle: ExtendedToggle): void{
         GodSinglton.audioManager.Play(SoundNames.ButtonClicked);
-        this._gameView.ToggleContainerAllowSwitchOff = false;
+        this._yatzyView.ToggleContainerAllowSwitchOff = false;
         this._currentSelectedToggle = toggle;
 
         if(this._isDiceRolling == true) return;
-        this._gameView.EnableMoveButton();
+        this._yatzyView.EnableMoveButton();
     }
 
     private WhenMoveButtonClicked(): void{
@@ -73,9 +73,9 @@ export default class GameModel{
         this._moveCounter += 1;
 
         this.ThrowCoutnerByDefault();
-        this._gameView.ToggleContainerAllowSwitchOff = true;
-        this._gameView.DisableMoveButton();
-        this._gameView.DisableToggle(this._currentSelectedToggle);
+        this._yatzyView.ToggleContainerAllowSwitchOff = true;
+        this._yatzyView.DisableMoveButton();
+        this._yatzyView.DisableToggle(this._currentSelectedToggle);
 
         let scoreSum: number = 0;
         if(this._hasFiveIdentical == true && this.CheckIdenticalNumbers(5)){
@@ -167,15 +167,15 @@ export default class GameModel{
         }
         if(this._upperSectionScoreCounter >= this._ScoreToGetUpperSectionBonus && this._hasUpperSectionBonus == true){
             this._hasUpperSectionBonus = false;
-            this._gameView.ChangeUpperSectionBonusScoresValue(this._UpperSectionBonus);
+            this._yatzyView.ChangeUpperSectionBonusScoresValue(this._UpperSectionBonus);
             this.AddScore(this._UpperSectionBonus);
         }
         console.log(scoreSum);
         this._currentSelectedToggle.ScoreText = `${scoreSum}`;
         this.ChangeScoreTextOnView();
-        this._gameView.DeactivateDiceLayout();
-        this._gameView.DeactivateDicePositionsNode();
-        this._gameView.ActivateThrowDiceText();
+        this._yatzyView.DeactivateDiceLayout();
+        this._yatzyView.DeactivateDicePositionsNode();
+        this._yatzyView.ActivateThrowDiceText();
         this.ToggleContainerActive(false);
         this.UnlockAllDice();
         this._currentSelectedToggle = null;
@@ -195,17 +195,17 @@ export default class GameModel{
         this._throwCount -= 1;
         this.ToggleContainerActive(true);
 
-        this._gameView.ActivateDiceLayout();
-        this._gameView.DeactivateDicePositionsNode();
-        this._gameView.DisableMoveButton();
+        this._yatzyView.ActivateDiceLayout();
+        this._yatzyView.DeactivateDicePositionsNode();
+        this._yatzyView.DisableMoveButton();
 
-        this._gameView.DeactivateThrowDiceText();
-        this._gameView.DisableThrowButton();
-        this._gameView.ThrowCounter = this._throwCount;
+        this._yatzyView.DeactivateThrowDiceText();
+        this._yatzyView.DisableThrowButton();
+        this._yatzyView.ThrowCounter = this._throwCount;
         GodSinglton.audioManager.Play(SoundNames.DiceThrow);
-        for(let i = 0; i < this._gameView.Dices.length; i++){
-            let dice: Dice = this._gameView.Dices[i].getComponent(Dice);
-            if(dice.Condition == DiceConditions.lock) {
+        for(let i = 0; i < this._yatzyView.Dices.length; i++){
+            let dice: Dice = this._yatzyView.Dices[i].getComponent(Dice);
+            if(dice.Condition == DiceConditions.picked) {
                 this._stopDicesCounter += 1;
                 continue;
             }
@@ -213,11 +213,11 @@ export default class GameModel{
             this.DoTweenForDice(dice);
             this.RollDice(dice, 1300, i).then(() => {
                 if(this._stopDicesCounter == this._diceValues.length){
-                    this._gameView.EnableThrowButton();
-                    this._gameView.ActivateDicePositionsNode();
+                    this._yatzyView.EnableThrowButton();
+                    this._yatzyView.ActivateDicePositionsNode();
                     this._isDiceRolling = false;
                     if(this._currentSelectedToggle != null){
-                        this._gameView.EnableMoveButton();
+                        this._yatzyView.EnableMoveButton();
                     }
                 }
             });
@@ -240,29 +240,29 @@ export default class GameModel{
     }
 
     private ToggleContainerActive(bool: boolean){
-        this._gameView.DoAllEnabledToggleInteractable(bool);
-        this._gameView.ToggleContainerActive(bool);
+        this._yatzyView.DoAllEnabledToggleInteractable(bool);
+        this._yatzyView.ToggleContainerActive(bool);
     }
 
     private ThrowCoutnerByDefault(){
         this._throwCount = this._MaxThrowCount;
-        this._gameView.ThrowCounter = this._MaxThrowCount;
+        this._yatzyView.ThrowCounter = this._MaxThrowCount;
     }
 
     private UnlockAllDice(){
-        this._gameView.Dices.forEach((element) => {
+        this._yatzyView.Dices.forEach((element) => {
             let dice: Dice = element.getComponent(Dice);
-            dice.Condition = DiceConditions.unlock;
+            dice.Condition = DiceConditions.unpicked;
         });
     }
 
     private ChangeViewSumValues(): void{
-        this._gameView.ChangeSumForLowerSectionValue(this._lowerSectionScoreCounter);
-        this._gameView.ChangeSumForUpperSectionValue(this._upperSectionScoreCounter);
+        this._yatzyView.ChangeSumForLowerSectionValue(this._lowerSectionScoreCounter);
+        this._yatzyView.ChangeSumForUpperSectionValue(this._upperSectionScoreCounter);
     }
 
     private ChangeScoreTextOnView(){
-        this._gameView.Score = this._currentScore;
+        this._yatzyView.Score = this._currentScore;
         this.ChangeViewSumValues();
     }
 
@@ -318,14 +318,15 @@ export default class GameModel{
 
         let rotationDirections: Vec3 = new Vec3();
         const rotationValues: number[] = [-720, -360 , 360, 720];
-        const diceNodeWorldPosition : Vec3 = dice.DiceNode.getWorldPosition();
-        const throwDirection: Vec3 = new Vec3(diceNodeWorldPosition.x, diceNodeWorldPosition.y + 400, diceNodeWorldPosition.z);
+        const throwPosition: Vec3 = dice.ThrowPosition;
         const landingPosition: Vec3 = dice.DiceLandingPointWorldPosition;
 
         let newLandingPositionPosition: Vec3 = new Vec3();
 
-        newLandingPositionPosition.x = landingPosition.x + randomRangeInt(-20,20);
-        newLandingPositionPosition.y = landingPosition.y + randomRangeInt(-50,50);
+        let landingRange: Vec2 = dice.RangeForLanding;
+
+        newLandingPositionPosition.x = landingPosition.x + randomRangeInt((landingRange.x * -1),landingRange.x);
+        newLandingPositionPosition.y = landingPosition.y + randomRangeInt((landingRange.y * -1),landingRange.y);
         newLandingPositionPosition.z = landingPosition.z;
 
         rotationDirections.x = rotationValues[Math.floor(Math.random()*rotationValues.length)];
@@ -348,7 +349,7 @@ export default class GameModel{
 
         dice.DiceNode.worldScale = new Vec3(2, 2, 2);
         dice.DiceNode.worldRotation = new Quat(0, 0, 0);
-        dice.DiceNode.worldPosition = throwDirection;
+        dice.DiceNode.worldPosition = throwPosition;
 
         tween(dice.DiceNode).parallel(rotationTween, scaleTween, positionScale).start();
     }
@@ -415,7 +416,7 @@ export default class GameModel{
     private RestartGame(): void{
         GodSinglton.audioManager.Play(SoundNames.ButtonClicked);
         this.AllScouresAndCountersByDefault();
-        this._gameView.StartNewGame();
+        this._yatzyView.StartNewGame();
         GodSinglton.viewManager.Hide(WindowTypes.RestartView);
     }
 }

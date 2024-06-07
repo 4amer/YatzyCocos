@@ -1,6 +1,6 @@
 export enum DiceConditions{
-    lock = 0,
-    unlock = 1,
+    picked = 0,
+    unpicked = 1,
 }
 
 
