@@ -9,6 +9,7 @@ export class ZonkView extends AbstractView {
     @property({visible: true, type: Button}) private _throwButton: Button = null; 
     @property({visible: true, type: RichText}) private _thisMoveScoreText: RichText = null; 
     @property({visible: true, type: [RichText]}) private _allScoreTexts: RichText[] = []; 
+    @property({visible: true, type: RichText}) private _totalScoreText: RichText; 
     @property({visible: true, type: [Node]}) private _dices: Node[] = []; 
     @property({visible: true, type: Node}) private _diceLandingPosition: Node = null; 
     @property({visible: true, type: Node}) private _diceLayout: Node = null; 
@@ -72,6 +73,14 @@ export class ZonkView extends AbstractView {
 
     public get Dices(): Node[]{
         return this._dices;
+    }
+
+    public get AllScoreTexts(): RichText[]{
+        return this._allScoreTexts
+    }
+
+    public get TotalScoreText(): RichText{
+        return this._totalScoreText;
     }
 }
 

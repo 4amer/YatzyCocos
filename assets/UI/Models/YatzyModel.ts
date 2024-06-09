@@ -8,6 +8,8 @@ import { ExtendedToggle } from '../../Scripts/ExtendedToggle';
 import { RestartView } from '../Views/RestartView';
 import { WindowTypes } from '../WindowTypes/WindowTypes';
 import { SoundNames } from '../../Scripts/AudioManager/SoundNames/SoundNames';
+import { AbstractDiceBehaviour } from '../../Scripts/DiceBehaviour/AbstractDiceBehaviour';
+import { YatzyDiceBehaviour } from '../../Scripts/DiceBehaviour/YatzyDiceBehaviour';
 const { ccclass, property } = _decorator;
 
 @ccclass('YatzyModel')
@@ -42,11 +44,20 @@ export default class YatzyModel{
     private _LastMove: number = 13;
     private _moveCounter: number = 0;
 
+    private _DiceBehaviour: AbstractDiceBehaviour = null;
+
     private constructor(){
         this._yatzyView = GodSinglton.yatzyView;
         this._yatzyView.node.on("Throw", this.WhenThrowButtonClicked, this);
         this._yatzyView.node.on("Move", this.WhenMoveButtonClicked, this);
         this._yatzyView.node.on("ToggleSelected", this.WhenToggleSelected, this);
+
+        this._DiceBehaviour = new YatzyDiceBehaviour(this._yatzyView.Dices);
+        
+        this._yatzyView.Dices.forEach(element => {
+            element.on("DiceCliked", this.OnDiceCliked, this);
+        });
+
 
         this._restartView = GodSinglton.restartView;
         this._restartView.node.on("Restart", this.RestartGame, this);
@@ -177,7 +188,7 @@ export default class YatzyModel{
         this._yatzyView.DeactivateDicePositionsNode();
         this._yatzyView.ActivateThrowDiceText();
         this.ToggleContainerActive(false);
-        this.UnlockAllDice();
+        this._DiceBehaviour.UnpickAllDice();
         this._currentSelectedToggle = null;
         if(this._moveCounter >= this._LastMove){
             GodSinglton.audioManager.Play(SoundNames.Congratulation);
@@ -210,7 +221,7 @@ export default class YatzyModel{
                 continue;
             }
 
-            this.DoTweenForDice(dice);
+            this._DiceBehaviour.DoRollTween(dice);
             this.RollDice(dice, 1300, i).then(() => {
                 if(this._stopDicesCounter == this._diceValues.length){
                     this._yatzyView.EnableThrowButton();
@@ -226,13 +237,13 @@ export default class YatzyModel{
 
     private async RollDice(dice: Dice, rollTimeMs: number, diceNumber: number): Promise<void> {
         return new Promise((resolve, reject) => {
-            dice.SetToDeactive();
+            this._DiceBehaviour.SetIsActive(dice, false);
             let randomNum = randomRangeInt(1, 7);
-            dice.RollToNumber(randomNum);
+            this._DiceBehaviour.RollToNumber(randomNum, dice);
             setTimeout(() => {
                 dice.RequestingValue = randomNum;
                 this._diceValues[diceNumber] = randomNum;
-                dice.SetToActive();
+                this._DiceBehaviour.SetIsActive(dice, true);
                 this._stopDicesCounter += 1;
                 resolve();
             }, rollTimeMs);
@@ -247,13 +258,6 @@ export default class YatzyModel{
     private ThrowCoutnerByDefault(){
         this._throwCount = this._MaxThrowCount;
         this._yatzyView.ThrowCounter = this._MaxThrowCount;
-    }
-
-    private UnlockAllDice(){
-        this._yatzyView.Dices.forEach((element) => {
-            let dice: Dice = element.getComponent(Dice);
-            dice.Condition = DiceConditions.unpicked;
-        });
     }
 
     private ChangeViewSumValues(): void{
@@ -311,48 +315,7 @@ export default class YatzyModel{
         return hasIdentical;
     }
 
-    private DoTweenForDice(dice: Dice){
-
-        dice.SetLandingPointByDefault();
-        const tweenTime: number = 1.3;
-
-        let rotationDirections: Vec3 = new Vec3();
-        const rotationValues: number[] = [-720, -360 , 360, 720];
-        const throwPosition: Vec3 = dice.ThrowPosition;
-        const landingPosition: Vec3 = dice.DiceLandingPointWorldPosition;
-
-        let newLandingPositionPosition: Vec3 = new Vec3();
-
-        let landingRange: Vec2 = dice.RangeForLanding;
-
-        newLandingPositionPosition.x = landingPosition.x + randomRangeInt((landingRange.x * -1),landingRange.x);
-        newLandingPositionPosition.y = landingPosition.y + randomRangeInt((landingRange.y * -1),landingRange.y);
-        newLandingPositionPosition.z = landingPosition.z;
-
-        rotationDirections.x = rotationValues[Math.floor(Math.random()*rotationValues.length)];
-        rotationDirections.y = rotationValues[Math.floor(Math.random()*rotationValues.length)];
-        rotationDirections.z = rotationValues[Math.floor(Math.random()*rotationValues.length)];
-
-        dice.DiceLandingPointWorldPosition = newLandingPositionPosition;
-
-        let rotationTween = tween(dice.DiceNode).to(tweenTime, {
-                eulerAngles: rotationDirections,
-                }, { easing: 'quadOut' });
-
-        let scaleTween = tween(dice.DiceNode).to(tweenTime, {
-                scale: new Vec3(1, 1, 1),
-                }, { easing: 'bounceOut' });
-        
-        let positionScale = tween(dice.DiceNode).to(tweenTime, {
-                worldPosition: dice.DiceLandingPointWorldPosition,
-                }, { easing: 'sineOut' });
-
-        dice.DiceNode.worldScale = new Vec3(2, 2, 2);
-        dice.DiceNode.worldRotation = new Quat(0, 0, 0);
-        dice.DiceNode.worldPosition = throwPosition;
-
-        tween(dice.DiceNode).parallel(rotationTween, scaleTween, positionScale).start();
-    }
+    private OnDiceCliked = (dice: Dice): void => this._DiceBehaviour.OnDiceCliked(dice);
 
     private CheckFullHouse(): boolean {
         let numCounts: Map<number, number> = new Map<number, number>();

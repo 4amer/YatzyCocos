@@ -20,7 +20,7 @@ export class Dice extends Component {
     @property({visible: true, type: Node}) private _nodeFive: Node = null;
     @property({visible: true, type: Node}) private _nodeSix: Node = null;
 
-    private _isActive = true;
+    private _isActive: boolean = true;
     private _defaultLandingUITransform: UITransform = null;
 
     private _DiceHeight: number = 100;
@@ -33,79 +33,15 @@ export class Dice extends Component {
 
     private TouchEnd(): void{
         console.log("WasClicked");
-        if(!this._isActive) return;
-        if(this._condition == DiceConditions.picked && this.HasActiveTween(this.DiceNode) == false){
-            this._condition = DiceConditions.unpicked;
-            this.ChangeVisualToUnpicked();
-        } 
-        else if (this._condition == DiceConditions.unpicked && this.HasActiveTween(this.DiceNode) == false) 
-        {
-            this._condition = DiceConditions.picked;
-            this.ChangeVisualToPicked();
-        }
+        this.node.emit("DiceCliked", this);
     }   
 
-    public Unlock(){
-        this._condition = DiceConditions.unpicked;
-        this.ChangeVisualToUnpicked();
-    }
-
-    public ChangeVisualToUnpicked(): void{
-        
-        let nodeRotation: Vec3 = this.DiceNode.eulerAngles;
-
-        tween(this.DiceNode).to(0.5,{
-            eulerAngles: new Vec3(nodeRotation.x - 20, nodeRotation.y, nodeRotation.z)
-        }, { easing: 'quintOut'}).start();
-    }
-
-    public ChangeVisualToPicked(): void{
-        
-        let nodeRotation: Vec3 = this.DiceNode.eulerAngles;
-
-        tween(this.DiceNode).to(0.5,{
-            eulerAngles: new Vec3(nodeRotation.x + 20, nodeRotation.y, nodeRotation.z)
-        }, { easing: 'quintOut'}).start();
-    }
-
-    private HasActiveTween(node: Node): boolean {
+    public HasActiveTween(node: Node): boolean {
         const tweens = TweenSystem.instance.ActionManager;
         if(tweens.getNumberOfRunningActionsInTarget(node) > 0){
             return true;
         }
         return false;
-    }
-
-    public RollToNumber(number: number){
-        let oppositeNumber = number;
-        switch(oppositeNumber){
-            case 1:
-                this._DiceChildren.lookAt(this._nodeOne.worldPosition);
-                break;
-            case 2:
-                this._DiceChildren.lookAt(this._nodeTwo.worldPosition);
-                break;
-            case 3:
-                this._DiceChildren.lookAt(this._nodeThree.worldPosition);
-                break;
-            case 4:
-                this._DiceChildren.lookAt(this._nodeFour.worldPosition);
-                break;
-            case 5:
-                this._DiceChildren.lookAt(this._nodeFive.worldPosition);
-                break;
-            case 6:
-                this._DiceChildren.lookAt(this._nodeSix.worldPosition);
-                break;
-        }
-    }
-    
-    public SetToDeactive(){
-        this._isActive = false;
-    }
-    
-    public SetToActive(){
-        this._isActive = true;
     }
 
     public SetLandingPointByDefault(){
@@ -132,6 +68,14 @@ export class Dice extends Component {
         return this.node;
     }
 
+    public get DiceChildren(): Node{
+        return this._DiceChildren;
+    }
+
+    public get DiceNumberNodes(): Node[]{
+        return new Array(this._nodeOne, this._nodeTwo, this._nodeThree, this._nodeFour, this._nodeFive, this._nodeSix);
+    }
+
     public set DiceLandingPointWorldPosition(position :Vec3){
         this._diceLandingPoint.setWorldPosition(position);
     }
@@ -144,6 +88,14 @@ export class Dice extends Component {
         return this._throwPosition.getWorldPosition();
     }
     
+    public set IsActive(bool: boolean){
+        this._isActive = bool;
+    }
+
+    public get IsActive(): boolean{
+        return this._isActive;
+    }
+
     public get RangeForLanding(): Vec2{
         let x: number = (this._defaultLandingUITransform.contentSize.width - this._DiceWight) / 2;
         let y: number = (this._defaultLandingUITransform.contentSize.height - this._DiceHeight) / 2;
