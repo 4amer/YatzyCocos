@@ -9,8 +9,9 @@ export class Dice extends Component {
     
     @property({visible: true, type: Node}) private _DiceChildren: Node = null;
 
+    @property({visible: true, type: Node}) private _onDiceClickArea: Node = null;
     @property({visible: true, type: Node}) private _diceLandingPoint: Node = null;
-    @property({visible: true, type: Node}) private _defaultLandingPoint: Node = null;
+    @property({visible: true, type: Node}) private _landingArea: Node = null;
     @property({visible: true, type: Node}) private _throwPosition: Node = null;
 
     @property({visible: true, type: Node}) private _nodeOne: Node = null;
@@ -27,10 +28,10 @@ export class Dice extends Component {
     private _DiceWight: number = 100;
 
     protected onLoad(): void {
-        this._diceLandingPoint.on(Input.EventType.TOUCH_END, this.TouchEnd, this);
-        this._defaultLandingUITransform =  this._defaultLandingPoint.getComponent(UITransform);
+        this._onDiceClickArea.on(Input.EventType.TOUCH_END, this.TouchEnd, this);
+        this._defaultLandingUITransform =  this._landingArea.getComponent(UITransform);
     }
-
+    
     private TouchEnd(): void{
         console.log("WasClicked");
         this.node.emit("DiceCliked", this);
@@ -45,7 +46,7 @@ export class Dice extends Component {
     }
 
     public SetLandingPointByDefault(){
-        this._diceLandingPoint.setWorldPosition(this._defaultLandingPoint.getWorldPosition());
+        this._diceLandingPoint.setWorldPosition(this._landingArea.getWorldPosition());
     }
     
     public set Condition(condition: DiceConditions){
@@ -88,6 +89,10 @@ export class Dice extends Component {
         return this._throwPosition.getWorldPosition();
     }
     
+    public get DiceLandingPoint(): Node{
+        return this._diceLandingPoint;
+    }
+
     public set IsActive(bool: boolean){
         this._isActive = bool;
     }

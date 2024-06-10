@@ -43,6 +43,20 @@ export abstract class AbstractDiceBehaviour{
         this.ChangeVisualToPicked(dice);
     }
 
+    public ActiveAllDices(): void{ 
+        this.Dices.forEach((element) => {
+            let dice: Dice = element.getComponent(Dice);
+            dice.IsActive = true;
+        });
+    }
+
+    public DeactiveAllDices(): void{ 
+        this.Dices.forEach((element) => {
+            let dice: Dice = element.getComponent(Dice);
+            dice.IsActive = false;
+        });
+    }
+
     public UnpickAllDice(): void{
         this.Dices.forEach((element) => {
             let dice: Dice = element.getComponent(Dice);
@@ -127,7 +141,33 @@ export abstract class AbstractDiceBehaviour{
         }
     }
 
+    public HasUnpickedDices(): boolean{
+        this.Dices.forEach((element) => {
+            if(element.Condition == DiceConditions.unpicked){
+                return true;
+            }
+        });
+        return false;
+    }
+
+    public get AllPickedDices(): Dice[]{
+        let dices: Dice[] = new Array<Dice>;
+        this.Dices.forEach((element) => {
+            if(element.Condition == DiceConditions.picked) dices.push(element);
+        })
+        return dices;
+    }
+
+    public get AllUnpickedDices(): Dice[]{
+        let dices: Dice[] = new Array<Dice>;
+        this.Dices.forEach((element) => {
+            if(element.Condition == DiceConditions.unpicked) dices.push(element);
+        })
+        return dices;
+    }
+
     protected abstract ChangeVisualToUnpicked(dice: Dice): void;
+
     protected abstract ChangeVisualToPicked(dice: Dice): void;
 }
 

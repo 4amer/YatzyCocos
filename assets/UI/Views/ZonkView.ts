@@ -13,6 +13,15 @@ export class ZonkView extends AbstractView {
     @property({visible: true, type: [Node]}) private _dices: Node[] = []; 
     @property({visible: true, type: Node}) private _diceLandingPosition: Node = null; 
     @property({visible: true, type: Node}) private _diceLayout: Node = null; 
+    @property({visible: true, type: [Node]}) private _pickedDicePositions1: Node[] = []; 
+    @property({visible: true, type: [Node]}) private _pickedDicePositions2: Node[] = []; 
+    @property({visible: true, type: [Node]}) private _pickedDicePositions3: Node[] = []; 
+    @property({visible: true, type: [Node]}) private _pickedDicePositions4: Node[] = []; 
+    @property({visible: true, type: [Node]}) private _pickedDicePositions5: Node[] = []; 
+    @property({visible: true, type: [Node]}) private _pickedDicePositions6: Node[] = []; 
+    @property({visible: true, type: [RichText]}) private _pickedDiceAreaScores: RichText[] = []; 
+
+    private _PickedDicePositions: Array<Array<Node>>;
     
     private NextMove(): void{
         this.node.emit("Move");
@@ -39,6 +48,10 @@ export class ZonkView extends AbstractView {
     }
 
     protected start(): void {
+        this._PickedDicePositions = new Array<Array<Node>>(
+            this._pickedDicePositions1, this._pickedDicePositions2, this._pickedDicePositions3,
+            this._pickedDicePositions4, this._pickedDicePositions5, this._pickedDicePositions6
+        );
         this.StartNewGame();
     }
 
@@ -81,6 +94,14 @@ export class ZonkView extends AbstractView {
 
     public get TotalScoreText(): RichText{
         return this._totalScoreText;
+    }
+
+    public get PickedDicePositions(): Array<Array<Node>>{
+        return this._PickedDicePositions;
+    }
+
+    public get PickedDiceAreaScores(): RichText[]{
+        return this._pickedDiceAreaScores;
     }
 }
 
