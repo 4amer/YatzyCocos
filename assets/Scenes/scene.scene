@@ -29990,7 +29990,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -39.17154687499999,
+      "x": -50.29459374999999,
       "y": 277.4015,
       "z": 0
     },
@@ -30029,7 +30029,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22.24609375,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -30050,7 +30050,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": "0",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -30194,7 +30194,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -39.17154687499999,
+      "x": -50.29459374999999,
       "y": 227.0015,
       "z": 0
     },
@@ -30233,7 +30233,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22.24609375,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -30254,7 +30254,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": "0",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -30398,7 +30398,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -39.17154687499999,
+      "x": -50.29459374999999,
       "y": 176.6015,
       "z": 0
     },
@@ -30437,7 +30437,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22.24609375,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -30458,7 +30458,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": "0",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -30602,7 +30602,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -39.17154687499999,
+      "x": -50.29459374999999,
       "y": 126.20150000000001,
       "z": 0
     },
@@ -30641,7 +30641,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22.24609375,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -30662,7 +30662,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": "0",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -30806,7 +30806,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -39.17154687499999,
+      "x": -50.29459374999999,
       "y": 75.8015,
       "z": 0
     },
@@ -30845,7 +30845,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22.24609375,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -30866,7 +30866,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": "0",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -31010,7 +31010,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -39.17154687499999,
+      "x": -50.29459374999999,
       "y": 25.4015,
       "z": 0
     },
@@ -31049,7 +31049,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22.24609375,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -31070,7 +31070,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": "0",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -31214,7 +31214,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -39.17154687499999,
+      "x": -50.29459374999999,
       "y": -24.99849999999998,
       "z": 0
     },
@@ -31253,7 +31253,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22.24609375,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -31274,7 +31274,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": "0",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -31418,7 +31418,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -39.17154687499999,
+      "x": -50.29459374999999,
       "y": -75.39849999999996,
       "z": 0
     },
@@ -31457,7 +31457,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22.24609375,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -31478,7 +31478,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": "0",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -31622,7 +31622,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -39.17154687499999,
+      "x": -50.29459374999999,
       "y": -125.79849999999993,
       "z": 0
     },
@@ -31661,7 +31661,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22.24609375,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -31682,7 +31682,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": "0",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,
@@ -31826,7 +31826,7 @@
     "_prefab": null,
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -16.92545312499999,
+      "x": -28.04849999999999,
       "y": -176.1984999999999,
       "z": 0
     },
@@ -31865,7 +31865,7 @@
     "__prefab": null,
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 22.24609375,
+      "width": 0,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -31886,7 +31886,7 @@
     "_enabled": true,
     "__prefab": null,
     "_lineHeight": 40,
-    "_string": "0",
+    "_string": "",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
     "_fontSize": 40,

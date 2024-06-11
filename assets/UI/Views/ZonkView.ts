@@ -84,12 +84,24 @@ export class ZonkView extends AbstractView {
         this._thisMoveScoreText.string = `${number}`;
     }
 
-    public get Dices(): Node[]{
+    public get NodeDices(): Node[]{
         return this._dices;
+    }
+
+    public get Dices(): Dice[]{
+        let array: Dice[] = [];
+        this._dices.forEach((element)=>{
+            array.push(element.getComponent(Dice));
+        })
+        return array; 
     }
 
     public get AllScoreTexts(): RichText[]{
         return this._allScoreTexts
+    }
+
+    public set TotalScoreText(score: number){
+        this._totalScoreText.string = score.toString();
     }
 
     public get TotalScoreText(): RichText{

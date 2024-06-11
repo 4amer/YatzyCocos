@@ -3,11 +3,11 @@ const { ccclass, property } = _decorator;
 
 @ccclass('ZonkRules')
 export class ZonkRules extends Component {
-    private _isExtraThrow: boolean = false;
 
     private _ThreeInRaw: number[] = Array<number>(1000, 200, 300, 400, 500, 600);
     private _One = 100;
     private _Five = 50;
+    private _MinScoreForMove = 350;
 
     public HasCombinations(map: Map<number, number>): boolean{
         var sortMap = new Map([...map.entries()].sort());
@@ -24,10 +24,10 @@ export class ZonkRules extends Component {
 
         if(this.HasStreet(sortMap)){
             scourSum = 1500;
-            this._isExtraThrow = true;
+            return scourSum;
         } else if(this.HasThreePairs(sortMap)){
             scourSum = 750;
-            this._isExtraThrow = true;
+            return scourSum;
         }
 
         const sortMapKeys = sortMap.keys();
@@ -51,31 +51,28 @@ export class ZonkRules extends Component {
         return scourSum;
     }
 
-    public get IsExtraThrow(): boolean{
-        return this._isExtraThrow;
-    }
-
     private HasSpacificNumber(num: number, map: Map<number, number>): boolean{
-        if(map.has(1)){
+        if(map.has(num)){
             return true;
         }
         return false;
     }
     private HasThreeOrMoreCombo(map: Map<number, number>): boolean{
+        let hasCombo = false;
         map.forEach((element) => {
             if(element >= 3){
-                return true;
+                hasCombo = true;
             }
         })
-        return false;
+        return hasCombo;
     }
     private HasThreePairs(map: Map<number, number>): boolean{
         let counter: number = 0;
-        for(let i = 0; i < map.size; i++){
-            if(map[i] == 2){
+        map.forEach((element)=>{
+            if(element == 2){
                 counter += 1;
             }
-        }
+        })
         if(counter == 3){
             return true;
         }
@@ -83,15 +80,18 @@ export class ZonkRules extends Component {
     }
     private HasStreet(map: Map<number, number>){
         let counter: number = 0;
-        for(let i = 0; i < map.size; i++){
-            if(map[i] == 1){
+        map.forEach((element)=>{
+            if(element == 1){
                 counter += 1;
             }
-        }
+        })
         if(counter == 6){
             return true;
         }
         return false;
+    }
+    public get MinScoreForMove(): number{
+        return this._MinScoreForMove;
     }
 }
 

@@ -142,12 +142,13 @@ export abstract class AbstractDiceBehaviour{
     }
 
     public HasUnpickedDices(): boolean{
+        let has: boolean = false;
         this.Dices.forEach((element) => {
             if(element.Condition == DiceConditions.unpicked){
-                return true;
+                has = true;
             }
         });
-        return false;
+        return has;
     }
 
     public get AllPickedDices(): Dice[]{
